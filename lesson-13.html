@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 13 节 · 数据存在哪 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+  .ccard { background: #f6f9fc; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 8px 0; margin: 10px 0 8px; }
+  .cl { padding: 7px 12px; cursor: pointer; border-left: 3px solid transparent; }
+  .cl code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13.5px; white-space: pre-wrap; word-break: break-all; color: #24344d; }
+  .cl.on { background: #eef4fb; border-left-color: #2e75b6; }
+  .cnote { font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; line-height: 1.65; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 3 一个网页应用是怎么组成的</div>
+  <div class="mod">第 13 节</div>
+  <h1>数据存在哪</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">记录进数据库按格子存，大文件进档案室按件存。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：表格与档案室</h2>
+    <p class="ana">单位里记信息有两种地方。一张是 Excel 表格：行列分明，想查「谁、哪天、多少」一筛就出来。另一处是档案室：一盒盒文件按编号上架，要的是整件拿走、整件放回。程序存数据，也正是这两派。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 174" role="img" aria-label="表格与档案柜示意图">
+        <rect x="18" y="38" width="140" height="100" rx="8" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.3"><line x1="18" y1="63" x2="158" y2="63"/><line x1="18" y1="88" x2="158" y2="88"/><line x1="18" y1="113" x2="158" y2="113"/><line x1="65" y1="38" x2="65" y2="138"/><line x1="111" y1="38" x2="111" y2="138"/></g>
+        <rect x="18" y="38" width="140" height="25" fill="#c9dcf2" opacity="0.55"/>
+        <text x="88" y="156" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1f4e78">数据库 · 表</text>
+        <rect x="202" y="38" width="140" height="100" rx="8" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.5" fill="none"><line x1="202" y1="71" x2="342" y2="71"/><line x1="202" y1="104" x2="342" y2="104"/><line x1="262" y1="54" x2="282" y2="54"/><line x1="262" y1="87" x2="282" y2="87"/><line x1="262" y1="120" x2="282" y2="120"/></g>
+        <text x="272" y="156" text-anchor="middle" font-size="13.5" font-weight="700" fill="#146c3c">文件存储 · 档案柜</text>
+        <text x="180" y="22" text-anchor="middle" font-size="12.5" fill="#77808f">同样是存东西，摆法完全不同</text>
+      </svg>
+      <div class="cap">图：一派按格子记账，一派按件存档</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>数据库，把数据摆进格子。</b>数据拆成一张张表（table）：一行是一条记录（record），一列是一个字段（field）。照片表里，一行就是一张照片：编号、所属区域、日期，各占一格。格子先定死，查起来才快、才不乱。</p>
+    <table class="mini-table">
+      <tr><th>id 编号</th><th>region 区域</th><th>date 日期</th></tr>
+      <tr><td>11</td><td>A14 重庆</td><td>2026-09-18</td></tr>
+      <tr><td>12</td><td>B07 武汉</td><td>2026-10-02</td></tr>
+    </table>
+    <p><b>日常操作，就四个动作。</b>增：加一条记录；查：按条件捞出来；改：更新某一条；删：去掉某一条。合起来叫 CRUD，就是四个英文词的首字母。AI 说「加个查询接口」，就是给「查」多开一个入口。</p>
+    <div class="chips">
+      <div class="chip3"><b>增</b><span>Create</span></div>
+      <div class="chip3"><b>查</b><span>Read</span></div>
+      <div class="chip3"><b>改</b><span>Update</span></div>
+      <div class="chip3"><b>删</b><span>Delete</span></div>
+    </div>
+    <p><b>指挥数据库，用 SQL。</b>SQL（Structured Query Language，结构化查询语言）是操作数据库的专用语言，长得像英文句子。第 8 块有四行真例子，点开逐行看——日常增删改查，基本就是那几句。</p>
+    <table class="cmp">
+      <tr><th style="width:26%">动作</th><th>SQL 关键词</th><th>大致意思</th></tr>
+      <tr><td><b>查</b></td><td>SELECT</td><td>把符合条件的行捞出来</td></tr>
+      <tr><td><b>增</b></td><td>INSERT INTO</td><td>往表里加一行</td></tr>
+      <tr><td><b>改</b></td><td>UPDATE</td><td>改掉某几行的内容</td></tr>
+      <tr><td><b>删</b></td><td>DELETE</td><td>去掉某几行</td></tr>
+    </table>
+    <p><b>大文件，不进数据库。</b>照片、视频的本体又大又多，塞进数据库会让它又慢又挤。常见分工是：本体放文件存储，按文件名一件件存取；数据库里只留一行小记录，写清它存在哪、属于谁。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>数据库</th><th>文件存储</th></tr>
+      <tr><td><b>存什么</b></td><td>一条条结构化记录</td><td>照片、视频等文件本体</td></tr>
+      <tr><td><b>怎么找</b></td><td>按条件筛：某区、某天</td><td>按文件名整件拿</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：相册是文件存储派</h2>
+    <p><b>相册没有用数据库。</b>它全部的结构化记录写在一个 album.json 文件里，照片本体也是一个个文件，都躺在 COS 上；程序自己读文件、改文件、再存回去。数据量不大、就两个人用，这样最简单，也足够。</p>
+    <p><b>如果换成数据库，会是另一副摆法。</b>区域拆一张表、照片拆一张表，照片表里多记一列区域编号，两张表靠编号关联：查「重庆的所有照片」，就是拿着编号去照片表里筛。等到人变多、查法变花哨，才轮到数据库上场。</p>
+    <p>所以听到 AI 说「先用文件存就行」，别觉得它在偷懒——对得上规模的选法，才是好选法。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这些数据准备存数据库还是存文件？为什么这么选，先说理由。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「删数据是真删还是先标记？误删了能不能找回？」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「以后要按日期、按区域筛数据，现在这个存法筛起来快不快？」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「数据你随便存一下。」——存法决定了以后查得快不快、丢了能不能恢复，不能随便。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>表</b><span>Table</span><span class="tap">点我看解释</span></div>
+        <div class="face back">数据库里管一类数据的格子表：一行一条记录，一列一个字段。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>记录</b><span>Record</span><span class="tap">点我看解释</span></div>
+        <div class="face back">表里的一行，就是一条完整数据，比如一张照片的编号、区域和日期。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>字段</b><span>Field</span><span class="tap">点我看解释</span></div>
+        <div class="face back">表里的一列，是一类属性，比如「拍摄日期」「所属区域」。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>CRUD</b><span>Create / Read / Update / Delete</span><span class="tap">点我看解释</span></div>
+        <div class="face back">增、查、改、删四个基本动作的合称，日常操作逃不出这四样。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>SQL</b><span>Structured Query Language</span><span class="tap">点我看解释</span></div>
+        <div class="face back">结构化查询语言，操作数据库的专用语言，长得像英文句子。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 在数据库的表里，「一行」通常对应什么？</div>
+      <button class="opt">一个字段</button>
+      <button class="opt">一条记录</button>
+      <button class="opt">一整张表</button>
+      <div class="exp">解析：一行是一条记录（比如一张照片的全部信息），一列才是一个字段。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">2.「把这条数据的日期改一下」，属于 CRUD 里的哪个动作？</div>
+      <button class="opt">增（Create）</button>
+      <button class="opt">查（Read）</button>
+      <button class="opt">改（Update）</button>
+      <div class="exp">解析：改已有记录的内容，就是 Update；对应 SQL 里的 UPDATE。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3. 照片本体一般不直接塞进数据库，主要因为？</div>
+      <button class="opt">数据库存不下图片格式</button>
+      <button class="opt">文件又大又多，塞进去又慢又占地方</button>
+      <button class="opt">行业规定不允许</button>
+      <div class="exp">解析：常见做法是本体放文件存储，数据库里只记一行「它在哪、属于谁」。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4.（情景）AI 说：「我把相册数据从 album.json 换成数据库了。」你最该先问什么？</div>
+      <button class="opt">「页面现在变快了吗？」</button>
+      <button class="opt">「现在就两个人用，换数据库图什么？旧数据怎么迁、备份怎么做？」</button>
+      <button class="opt">「这个数据库是什么牌子的？」</button>
+      <div class="exp">解析：换存法先问收益对不对得上规模，再问迁移和备份；为换而换，只会添乱。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5. 区域表和照片表要「对上号」，靠的是什么？</div>
+      <button class="opt">靠表格的颜色</button>
+      <button class="opt">靠编号这类共同字段关联</button>
+      <button class="opt">靠文件名长短</button>
+      <div class="exp">解析：照片表里记上区域编号，就能顺着编号找到它属于哪个区域——这叫关联。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">8</span>读代码（点一行，看一行）</h2>
+    <p>四行 SQL，正好对应增、查、改、删。点任意一行，看它在指挥数据库做什么。</p>
+    <div class="ccard">
+      <div class="cl" data-note="查（SELECT）：从照片表 photos 里，把区域是 A14 的照片全部捞出来。* 是「所有列都要」的意思。"><code>SELECT * FROM photos WHERE region = 'A14';</code></div>
+      <div class="cl" data-note="增（INSERT）：往照片表里加一条新记录——区域 B07，日期 2026-10-02。"><code>INSERT INTO photos (region, date) VALUES ('B07', '2026-10-02');</code></div>
+      <div class="cl" data-note="改（UPDATE）：把编号是 12 的那条记录，日期更新成 2026-10-03。WHERE 是定位条件，千万不能漏，漏了会改到全表。"><code>UPDATE photos SET date = '2026-10-03' WHERE id = 12;</code></div>
+      <div class="cl" data-note="删（DELETE）：把编号 12 的记录去掉。这是真删，没有后悔药，所以执行删除前一定要先确认条件对不对。"><code>DELETE FROM photos WHERE id = 12;</code></div>
+    </div>
+    <div class="cnote" id="cnote">点上面任意一行，这里会显示这一行的意思。</div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-12.html">← 上一节：第 12 节 API</a>
+    <a href="lesson-14.html">下一节：第 14 节 部署 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '13';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+  document.querySelectorAll('.cl').forEach(function (l) {
+    l.onclick = function () {
+      document.querySelectorAll('.cl').forEach(function (x) { x.classList.remove('on'); });
+      l.classList.add('on');
+      document.getElementById('cnote').textContent = l.dataset.note;
+    };
+  });
+</script>
+</body>
+</html>
