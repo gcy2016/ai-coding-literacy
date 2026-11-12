@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 09 节 · 前端、后端、数据库：三件套 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 12.5px; opacity: .85; letter-spacing: 2px; margin-bottom: 6px; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { display: flex; align-items: flex-start; margin: 14px 0 4px; }
+  .fstep { flex: 1; text-align: center; font-size: 12.5px; color: #40506b; line-height: 1.5; padding: 0 2px; }
+  .fstep i { display: flex; width: 30px; height: 30px; margin: 0 auto 5px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 14px; }
+  .farr { color: #b7c3d4; font-size: 15px; padding-top: 5px; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 3 一个网页应用是怎么组成的</div>
+  <div class="mod">第 09 节 · 样板节</div>
+  <h1>前端、后端、数据库：三件套</h1>
+
+  <div class="keyline">
+    <div class="lab">一句话结论</div>
+    <div class="big">前端管脸面，后端管干活，数据库管记账。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：一家餐厅</h2>
+    <p class="ana">一个网页应用就像一家餐厅。大堂是客人能看到、能坐的地方；后厨关着门，客人不进去，但菜都是在里面做的；仓库不上菜也不做菜，只管把食材存好、要的时候取出来。三方配合，一顿饭才上得了桌。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 196" role="img" aria-label="餐厅三件套示意图">
+        <rect x="6" y="52" width="62" height="92" rx="10" fill="#f6f9fc" stroke="#c9dcf2"/>
+        <g stroke="#77808f" stroke-width="1.8" fill="none"><rect x="27" y="66" width="20" height="36" rx="4"/><line x1="33" y1="95" x2="41" y2="95"/></g>
+        <text x="37" y="114" text-anchor="middle" font-size="11.5" fill="#40506b">你的手机</text>
+        <text x="37" y="130" text-anchor="middle" font-size="11.5" fill="#40506b">浏览器</text>
+        <rect x="92" y="40" width="80" height="116" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><path d="M117 88 a15 12 0 0 1 30 0"/><line x1="110" y1="90" x2="154" y2="90"/><circle cx="132" cy="72" r="2.6"/></g>
+        <text x="132" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">大堂</text>
+        <text x="132" y="121" text-anchor="middle" font-size="12" fill="#40506b">前端</text>
+        <text x="132" y="139" text-anchor="middle" font-size="11" fill="#77808f">看得见、点得到</text>
+        <rect x="188" y="40" width="80" height="116" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><rect x="215" y="80" width="26" height="17" rx="3"/><line x1="211" y1="76" x2="245" y2="76"/><circle cx="228" cy="71" r="2.6"/></g>
+        <text x="228" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">后厨</text>
+        <text x="228" y="121" text-anchor="middle" font-size="12" fill="#40506b">后端</text>
+        <text x="228" y="139" text-anchor="middle" font-size="11" fill="#77808f">关着门干活</text>
+        <rect x="284" y="40" width="70" height="116" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><rect x="306" y="68" width="26" height="26"/><line x1="306" y1="78" x2="332" y2="78"/><line x1="319" y1="78" x2="319" y2="94"/></g>
+        <text x="319" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">仓库</text>
+        <text x="319" y="121" text-anchor="middle" font-size="12" fill="#40506b">数据库</text>
+        <text x="319" y="139" text-anchor="middle" font-size="11" fill="#77808f">只管存和取</text>
+        <text x="80" y="30" text-anchor="middle" font-size="11.5" fill="#2e75b6">点菜 →</text>
+        <text x="180" y="30" text-anchor="middle" font-size="11.5" fill="#8a5a12">菜单 →</text>
+        <text x="276" y="30" text-anchor="middle" font-size="11.5" fill="#146c3c">取食材 →</text>
+        <text x="180" y="180" text-anchor="middle" font-size="11.5" fill="#77808f">← 上菜、端回结果，一来一回叫「请求与响应」</text>
+      </svg>
+      <div class="cap">图：三件套的分工——对应英文 frontend / backend / database</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>前端：你看得见的那一层。</b>页面长什么样、按钮在哪、点了有什么反应，都归前端管。它运行在你的浏览器里，由三种代码合作：HTML（HyperText Markup Language，超文本标记语言）搭骨架，CSS 管打扮，JavaScript 管动作——这三个词下一节细讲。</p>
+    <div class="chips">
+      <div class="chip3"><b>HTML</b><span>骨架：有什么</span></div>
+      <div class="chip3"><b>CSS</b><span>打扮：长什么样</span></div>
+      <div class="chip3"><b>JavaScript</b><span>动作：能干什么</span></div>
+    </div>
+    <p><b>后端：关着门干活的那一层。</b>核对身份、处理数据、调用别的服务，最后把结果递回给前端。它运行在服务器（server）上——一台一直开着的电脑。你看不见它，只能通过前端「上菜」知道活干完了。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>前端</th><th>后端</th></tr>
+      <tr><td><b>在哪跑</b></td><td>你的浏览器里</td><td>服务器上</td></tr>
+      <tr><td><b>负责什么</b></td><td>显示和交互</td><td>逻辑和处理</td></tr>
+      <tr><td><b>打个比方</b></td><td>服务员和菜单</td><td>厨师和灶台</td></tr>
+    </table>
+    <p><b>数据库：只管记账的那一层。</b>它只做两件事：存、取。像一本结构严谨的电子账本，每条数据放在固定的格子里，查得快、不会乱。它不负责思考——「这笔该不该记」是后端说了算，它只负责记好。</p>
+    <table class="mini-table">
+      <tr><th>编号</th><th>城市</th><th>点亮日期</th><th>照片数</th></tr>
+      <tr><td>A14</td><td>重庆</td><td>2026-09-18</td><td>36</td></tr>
+      <tr><td>B07</td><td>武汉</td><td>2026-10-02</td><td>12</td></tr>
+    </table>
+    <p><b>一次点击的完整旅程。</b>以在相册里传一张照片为例：你在前端点「上传」，前端把照片打包成请求（request）发给后端，后端检查加工后存进数据库，数据库回一句「存好了」，前端随即把新照片显示出来。一去一回，就是一次请求与响应（response）。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>点上传</div><div class="farr">→</div>
+      <div class="fstep"><i>2</i>前端打包成请求</div><div class="farr">→</div>
+      <div class="fstep"><i>3</i>后端检查加工</div><div class="farr">→</div>
+      <div class="fstep"><i>4</i>存进数据库</div><div class="farr">→</div>
+      <div class="fstep"><i>5</i>前端显示新照片</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：旅行相册</h2>
+    <p>你的旅行相册（现行代码在 muse-letters 仓库的 album 目录）是个特别好的例子，它说明<b>三件套分的是职责，不是机器</b>：</p>
+    <p><b>前端，就是全部。</b>相册托管在 GitHub Pages 上，是一堆静态网页文件；界面和操作逻辑都由浏览器里的 JavaScript 完成，没有别的程序在别处替它显示。</p>
+    <p><b>后端，没有自己的。</b>按规矩「干活」该归后端，但相册没有一台服务器在跑后端程序：密码校验、编辑锁、版本比对这些逻辑也在浏览器里跑；真需要「有个地方办事」时，网页直接调用腾讯云 COS（Cloud Object Storage，对象存储）的接口。</p>
+    <p><b>数据库，也没有数据库软件。</b>相册的全部数据是一个叫 album.json 的文件，照片本身也是文件，一起躺在 COS 的私有存储桶里，由网页直接读写——对象存储顶了「仓库」的班。</p>
+    <p>所以以后 AI 跟你说「后端」时，可以先问一句：这个职责现在是谁在担——我们自己的服务器，还是某个云服务？</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这次只改前端的显示，不要动数据存取的部分。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「这个功能要保存的数据，准备放在哪、用哪种形式存？先说方案我再确认。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「改完了告诉我：动的是前端、后端还是数据，分别改了哪些文件。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「把相册改一下。」——没说改哪一层、要什么效果，AI 只能猜，很容易改错地方。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>前端</b><span>Frontend</span><span class="tap">点我看解释</span></div>
+        <div class="face back">你直接看到和操作的那部分程序，运行在浏览器里。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>后端</b><span>Backend</span><span class="tap">点我看解释</span></div>
+        <div class="face back">在服务器上运行的程序，负责处理逻辑和数据，你看不见它。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>数据库</b><span>Database</span><span class="tap">点我看解释</span></div>
+        <div class="face back">专门存数据、取数据的系统，像一本随时能查的电子账本。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>服务器</b><span>Server</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一台一直开着、等着接收请求的电脑，后端程序住在上面。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>请求 / 响应</b><span>Request / Response</span><span class="tap">点我看解释</span></div>
+        <div class="face back">前端向后端要东西叫请求，后端把结果递回来叫响应，一来一回。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 你在相册里点「删除照片」，这张照片真正被删掉，动作最终落在哪一层？</div>
+      <button class="opt">前端：把照片从页面上拿掉</button>
+      <button class="opt">存数据的那一层：把文件和记录真正删除</button>
+      <button class="opt">手机系统相册：那边同步删一份</button>
+      <div class="exp">解析：前端只是把你的意图发出去；数据真正的增删，发生在存数据的那一层（相册就是 COS 里的文件和 album.json）。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">2. AI 说「这次是后端改动，前端不用动」，最可能的意思是？</div>
+      <button class="opt">干活的逻辑变了，页面长相不变</button>
+      <button class="opt">页面要重新设计一遍</button>
+      <button class="opt">数据库里的数据要清空重来</button>
+      <div class="exp">解析：后端管逻辑、前端管长相。逻辑改了，界面可以原样不动——这也是为什么有些更新你「看不出变化」。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">3. 旅行相册没有自己的后端服务器，它靠什么把照片存下来？</div>
+      <button class="opt">浏览器直接调用腾讯云 COS 的存储接口</button>
+      <button class="opt">GitHub Pages 顺带帮它存照片</button>
+      <button class="opt">照片其实只存在打开网页的那台手机里</button>
+      <div class="exp">解析：相册的网页拿到你用密码解开的密钥，直接读写 COS 私有桶——云服务顶替了后端和数据库的存取职责。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="index.html">← 回目录</a>
+    <span class="dis">下一节（第 10 节）待制作 →</span>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz['9'] = st.quiz['9'] || [];
+        st.quiz['9'][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz['9'] || [])[qi];
+      if (prev !== undefined) {
+        if (bi === ans) b.classList.add('ok');
+        if (prev === false && bi !== ans) { /* 不还原当初的错选，只标对的 */ }
+        exp.classList.add('show');
+      }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done['9']) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done['9'] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
