@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 18 节 · 数据处理脚本：让 AI 帮你分析日志 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #1f4e78; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+  .codecard { background: #0f2233; border-radius: 12px; padding: 12px 8px; margin: 12px 0 8px; overflow-x: auto; }
+  .cl { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.9; color: #d6e4f0; white-space: pre; padding: 1px 8px; border-radius: 6px; cursor: pointer; }
+  .cl.on { background: #2e75b6; color: #fff; }
+  .codeexp { background: #f6f9fc; border: 1px solid #dfe6ef; border-radius: 8px; padding: 10px 12px; font-size: 14.5px; color: #40506b; min-height: 52px; line-height: 1.65; }
+  .codeexp b { color: #1f4e78; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 5 当代码遇到硬件</div>
+  <div class="mod">第 18 节</div>
+  <h1>数据处理脚本：让 AI 帮你分析日志</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n">1</span> 一句话结论</div>
+    <div class="big">脚本就是一条流水线：读进来、筛一遍、数出结果。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：流水线</h2>
+    <p class="ana">工厂流水线干活分三段：原料从这头进来，中间几个工位该筛的筛、该装的装，成品从那头出来。分析一份日志也是这个路子：日志文件是原料，中间按你定的规矩加工一遍，另一头出来的是能直接看的结论。写脚本，就是把这条流水线用代码搭出来，让它替你重复跑。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 178" role="img" aria-label="脚本流水线示意图">
+        <rect x="8" y="38" width="104" height="104" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><path d="M42 104 V58 h24 l12 12 v34 z"/><path d="M66 58 v12 h12"/></g>
+        <text x="60" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">日志文件</text>
+        <text x="60" y="140" text-anchor="middle" font-size="12.5" fill="#77808f">几万帧报文</text>
+        <text x="119" y="95" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <rect x="128" y="38" width="104" height="104" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><line x1="150" y1="66" x2="210" y2="66"/><circle cx="168" cy="66" r="4.5"/><line x1="150" y1="82" x2="210" y2="82"/><circle cx="192" cy="82" r="4.5"/><line x1="150" y1="98" x2="210" y2="98"/><circle cx="158" cy="98" r="4.5"/></g>
+        <text x="180" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">脚本加工</text>
+        <text x="180" y="140" text-anchor="middle" font-size="12.5" fill="#77808f">读 · 筛 · 数</text>
+        <text x="239" y="95" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <rect x="248" y="38" width="104" height="104" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="5" fill="none"><line x1="280" y1="80" x2="280" y2="100"/><line x1="298" y1="64" x2="298" y2="100"/><line x1="316" y1="86" x2="316" y2="100"/></g>
+        <line x1="268" y1="102" x2="330" y2="102" stroke="#1d9e57" stroke-width="1.8"/>
+        <text x="300" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">一份结果</text>
+        <text x="300" y="140" text-anchor="middle" font-size="12.5" fill="#77808f">表格或图</text>
+        <text x="180" y="166" text-anchor="middle" font-size="12.5" fill="#77808f">规则你来定，重复一万遍的活让脚本跑</text>
+      </svg>
+      <div class="cap">图：脚本 = 进料、加工、出报告的一条流水线</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>脚本：按步骤自动干活的小程序。</b>脚本（script）是把处理步骤写成一串指令、让电脑照着自动跑一遍的小程序：不用做界面，不用长期开着，跑完出结果就收工。「把这堆数据按这个规则过一遍」的活，天生就是它的。</p>
+    <div class="chips">
+      <div class="chip3"><b>没界面</b><span>不伺候人点</span></div>
+      <div class="chip3"><b>跑一遍</b><span>出结果就完</span></div>
+      <div class="chip3"><b>能复用</b><span>下次接着跑</span></div>
+    </div>
+    <p><b>基本套路，永远是四步。</b>再复杂的分析脚本，拆开都是这四步：先把文件读进来，再按条件筛掉不要的，然后该数的数、该算的算，最后把结果摆成表或图。让 AI 写脚本时照这四步交代，它就不容易跑偏。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>读文件：把日志一帧一帧读进来</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>筛数据：只留符合条件的，其余不要</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>做统计：计数、求和、找最大最小</div><div class="farr">↓</div>
+      <div class="fstep"><i>4</i>出结果：摆成表格或画成图，能直接看</div>
+    </div>
+    <p><b>先认清你的数据是什么格式。</b>同一份数据，存法不同脾气不同：CSV 是文本，能直接打开看，但体积大；二进制是给机器读的，人睁眼看不懂，胜在体积小、读得快。让 AI 动手前先告诉它格式，它才知道用什么办法读。</p>
+    <table class="cmp">
+      <tr><th style="width:24%"></th><th>CSV（文本）</th><th>BLF（二进制）</th></tr>
+      <tr><td><b>打开方式</b></td><td>记事本就能看</td><td>要专门的工具读</td></tr>
+      <tr><td><b>体积</b></td><td>大</td><td>小得多</td></tr>
+      <tr><td><b>谁读得快</b></td><td>人</td><td>机器</td></tr>
+    </table>
+    <p><b>这类活，为什么特别适合交给 AI。</b>规则由你定，代码由它写，结果由你验——分工正好。你要做的只有两件：把「数什么、什么算对」说清楚，再拿结论换个角度复核一遍。脚本还能留着，下次同类日志直接再跑。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：数一份真实报文日志</h2>
+    <p>这活你真见它干过：一段几万帧的 CAN 报文日志，格式是 BLF（二进制日志，人看不懂、机器读得快）。让 AI 写一个 Python 脚本去读它：数总共有多少帧、按 ID 把帧分类、再专门检查你打的标记在不在——几分钟全跑完。靠人肉在分析软件里翻，要翻到眼花。</p>
+    <p>也顺带印证了格式的差别：同一份日志，存成 ASC 文本格式，体积是 BLF 的几十倍；存成 BLF，就小小一个。数据量一大，选什么格式存，本身就是笔账。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「先别急着写：你打算分几步处理这个日志？读、筛、数、出表，逐步跟我对一遍。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「筛选条件先报我确认：只统计名单里这几个 ID 的帧，其余的不要。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「帮我分析一下这个日志，看看有没有问题。」——数什么、什么叫「有问题」都没定义，它只能交一版猜出来的结果。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>脚本</b><span>Script</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把一串处理步骤写下来、让电脑自动跑一遍的小程序，跑完出结果就收工。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>日志</b><span>Log</span><span class="tap">点我看解释</span></div>
+        <div class="face back">程序或设备按时间记下的流水账，事后分析数据、查问题都靠它。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>CSV</b><span>Comma-Separated Values</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一种纯文本表格：一行一条记录、逗号分列，记事本就能打开看。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>二进制</b><span>Binary</span><span class="tap">点我看解释</span></div>
+        <div class="face back">给机器读的数据存法：人睁眼看不懂，但体积小、读取快，BLF 就是这种。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>筛选</b><span>Filter</span><span class="tap">点我看解释</span></div>
+        <div class="face back">按条件把不要的数据去掉、只留要看的，是数据处理四步里的第二步。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="0">
+      <div class="qt">1. 脚本和一个长期运行的程序，最大的不同是？</div>
+      <button class="opt">按事先写好的步骤自动跑一遍、出结果，通常没有界面</button>
+      <button class="opt">只能在半夜运行</button>
+      <button class="opt">运行时不需要任何输入文件</button>
+      <div class="exp">解析：脚本的本色是「自动重复执行一串步骤」，干完就收工，不常驻、不伺候界面。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">2. CSV 格式的特点是？</div>
+      <button class="opt">只有 Excel 能打开</button>
+      <button class="opt">是二进制，人看不懂</button>
+      <button class="opt">纯文本，记事本就能打开看，只是体积偏大</button>
+      <div class="exp">解析：CSV 就是逗号分隔的文本表格，胜在通用、好读，输在体积。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3.（情景）你想知道一个日志里 ID 为 0x100 的帧出现了多少次，哪种交代最靠谱？</div>
+      <button class="opt">「帮我看看这个日志有没有异常。」</button>
+      <button class="opt">「写个脚本：逐帧读，按 ID 统计帧数，把 0x100 出现了多少次单独告诉我。」</button>
+      <button class="opt">「把这个日志打印出来，我自己数。」</button>
+      <div class="exp">解析：数什么、按什么分组、要哪个结果，一次说清，写出来的脚本才对得上你的问题。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">4. 同一份日志，BLF 比 ASC 小几十倍，原因是？</div>
+      <button class="opt">BLF 是二进制格式，存得紧凑，机器读起来也快</button>
+      <button class="opt">BLF 把一半的帧丢掉了</button>
+      <button class="opt">ASC 文件里混进了照片</button>
+      <div class="exp">解析：二进制不是把数据丢了，是换了种紧凑存法；代价是人没法直接打开看。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5. AI 写好脚本、跑出「共有 6 个标记」，你验收时最该做的是？</div>
+      <button class="opt">数字看着顺眼，直接采用</button>
+      <button class="opt">换一个独立方法再数一遍，两个结果对上才算数</button>
+      <button class="opt">让它把脚本写得再长一点</button>
+      <div class="exp">解析：脚本跑通不等于数对。关键数字要用另一个方法复核——下一节会讲一个真实的教训。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">8</span>读代码：一个数日志的脚本（简化版）</h2>
+    <p>下面这段 Python 是简化过的教学示例，干的正是本节说的活：把一个 BLF 日志逐帧读一遍，数总数，再数里面有多少个标记帧——就是第 05 节讲过的那种特殊帧，ID 是 1FFFFFF0。<b>点任意一行，看这一行在干什么。</b></p>
+    <div class="codecard">
+      <div class="cl" data-ln="1" data-e="导入（import）一个现成的工具包 can，它专门负责读 CAN 日志，我们不用自己去啃二进制格式。">import can</div>
+      <div class="cl" data-ln="2" data-e="准备一个计数器 total（总数），先设成 0，等下每读到一帧就往上加一。">total = 0</div>
+      <div class="cl" data-ln="3" data-e="再准备一个计数器 hits，专门数标记帧，同样先归零。">hits = 0</div>
+      <div class="cl" data-ln="4" data-e="开始循环（for）：把 trip.blf 这个日志文件一帧一帧读出来，每帧临时起名叫 msg。下面缩进的几行，就是每帧都要重复做的事。">for msg in can.BLFReader("trip.blf"):</div>
+      <div class="cl" data-ln="5" data-e="每读到一帧，总数加 1。这一行缩进在循环里面，所以会重复执行几万次。">    total = total + 1</div>
+      <div class="cl" data-ln="6" data-e="判断（if）：这一帧的 ID 是不是我们要找的 0x1FFFFFF0？开头的 0x 是十六进制的写法标记，ID 本身就是第 05 节那个标记帧的编号。">    if msg.arbitration_id == 0x1FFFFFF0:</div>
+      <div class="cl" data-ln="7" data-e="是标记帧，就给 hits 加 1。这一行缩进更深，表示「只有判断成立时才做」。">        hits = hits + 1</div>
+      <div class="cl" data-ln="8" data-e="循环全部结束，把总帧数打印出来看。">print("总帧数：", total)</div>
+      <div class="cl" data-ln="9" data-e="再把标记帧的数量打印出来——一眼就知道标记在不在、共有几个。">print("标记帧：", hits)</div>
+    </div>
+    <div class="codeexp" id="codeExp">点任意一行，这里会显示这一行的中文解释。</div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-17.html">← 上一节：第 17 节</a>
+    <a href="lesson-19.html">下一节：第 19 节 AI 编程工具 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '18';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  var LG = String(parseInt(NO, 10)); if (LG !== NO) { if (st.done[LG]) st.done[NO] = true; if (st.quiz[LG]) st.quiz[NO] = st.quiz[LG]; }
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+  document.querySelectorAll('.cl').forEach(function (el) {
+    el.onclick = function () {
+      document.querySelectorAll('.cl').forEach(function (x) { x.classList.remove('on'); });
+      el.classList.add('on');
+      document.getElementById('codeExp').innerHTML = '<b>第 ' + el.dataset.ln + ' 行：</b>' + el.dataset.e;
+    };
+  });
+</script>
+</body>
+</html>
