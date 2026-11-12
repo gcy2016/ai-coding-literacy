@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 06 节 · 逻辑：判断、循环、函数 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+  .codecard { background: #0f2233; border-radius: 12px; padding: 12px 8px; margin: 12px 0 8px; overflow-x: auto; }
+  .cl { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.9; color: #d6e4f0; white-space: pre; padding: 1px 8px; border-radius: 6px; cursor: pointer; }
+  .cl.on { background: #2e75b6; color: #fff; }
+  .codeexp { background: #f6f9fc; border: 1px solid #dfe6ef; border-radius: 8px; padding: 10px 12px; font-size: 14.5px; color: #40506b; min-height: 52px; line-height: 1.65; }
+  .codeexp b { color: #1f4e78; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 2 看懂代码的骨架</div>
+  <div class="mod">第 06 节</div>
+  <h1>逻辑：判断、循环、函数</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">判断决定走哪条路，循环负责重复，函数把活打包。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：岔路口和机器</h2>
+    <p class="ana">程序干活的方式，拆开看就三种动作：走到岔路口，按条件选一条路，这是判断；同一件事来回做很多遍，这是循环；把一整套工序封进一台机器，投料进去、成品出来，这是函数。流程图里判断画成菱形，正是因为它永远只有两个出口：是，或者否。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 178" role="img" aria-label="判断流程图与函数机器示意图">
+        <rect x="6" y="30" width="168" height="122" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <polygon points="90,44 128,72 90,100 52,72" fill="#fff" stroke="#2e75b6" stroke-width="1.8"/>
+        <text x="90" y="77" text-anchor="middle" font-size="12.5" fill="#1f4e78">有照片？</text>
+        <line x1="66" y1="100" x2="50" y2="118" stroke="#1d9e57" stroke-width="1.8"/>
+        <line x1="114" y1="100" x2="130" y2="118" stroke="#cf3f38" stroke-width="1.8"/>
+        <text x="42" y="112" font-size="12.5" fill="#1d9e57">是</text>
+        <text x="128" y="112" font-size="12.5" fill="#cf3f38">否</text>
+        <rect x="22" y="120" width="52" height="20" rx="5" fill="#eefaf0" stroke="#1d9e57"/>
+        <text x="48" y="134" text-anchor="middle" font-size="12.5" fill="#146c3c">点亮它</text>
+        <rect x="106" y="120" width="52" height="20" rx="5" fill="#f6f9fc" stroke="#b7c3d4"/>
+        <text x="132" y="134" text-anchor="middle" font-size="12.5" fill="#77808f">跳过</text>
+        <rect x="186" y="30" width="168" height="122" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <text x="204" y="80" font-size="12.5" fill="#40506b">照片一堆</text>
+        <line x1="238" y1="76" x2="252" y2="76" stroke="#d9a13b" stroke-width="1.8"/>
+        <rect x="254" y="54" width="52" height="44" rx="8" fill="#fff" stroke="#d9a13b" stroke-width="1.8"/>
+        <text x="280" y="73" text-anchor="middle" font-size="12.5" font-weight="700" fill="#8a5a12">函数</text>
+        <text x="280" y="90" text-anchor="middle" font-size="12.5" fill="#8a5a12">挑城市</text>
+        <line x1="306" y1="76" x2="320" y2="76" stroke="#d9a13b" stroke-width="1.8"/>
+        <text x="324" y="80" font-size="12.5" fill="#40506b">12</text>
+        <text x="270" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">投料进去，成品出来</text>
+        <text x="180" y="170" text-anchor="middle" font-size="12.5" fill="#77808f">左边是判断的流程图，右边是函数这台机器</text>
+      </svg>
+      <div class="cap">图：判断分岔，函数打包</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>判断：岔路口。</b>判断（if，英文就是「如果」）的写法是「如果条件成立，就做某事」。条件只能回答是或否：「这个区域有照片吗？」有就点亮，没有就过。没有中间答案，这是程序和人商量事情最大的不同。</p>
+    <p><b>循环：不知疲倦的重复。</b>循环（loop）把同一段处理重复执行。最常用的是 for：把列表里的东西一个一个取出来处理。几千帧报文、几百张照片，人看一眼就烦，循环过一遍只要一眨眼。</p>
+    <div class="chips">
+      <div class="chip3"><b>逐个取</b><span>列表有几个取几次</span></div>
+      <div class="chip3"><b>同一套处理</b><span>每个都这么办</span></div>
+      <div class="chip3"><b>不用人守</b><span>它自己跑完</span></div>
+    </div>
+    <p><b>函数：打包好的机器。</b>函数（function）把一段代码封起来，起个名字。给它输入（参数，parameter），它加工完吐出输出（返回值，return value）。同样的活要用十次，就调用十次，不用把代码抄十遍。</p>
+    <p><b>缩进和括号：谁归谁管。</b>Python 靠缩进分段：缩进对齐的行归上面那句管。你以前学的 C 语言靠大括号圈地盘，意思一样、形状不同。AI 改代码时把缩进挪错位，逻辑会悄悄变样，这是验收时值得扫一眼的地方。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>Python</th><th>C 语言</th></tr>
+      <tr><td><b>怎么分段</b></td><td>靠缩进对齐</td><td>靠大括号 { }</td></tr>
+      <tr><td><b>判断写法</b></td><td>if 条件:</td><td>if (条件) { }</td></tr>
+      <tr><td><b>形状印象</b></td><td>干净，靠站队</td><td>严实，靠圈围</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：相册怎么点亮区域</h2>
+    <p>相册每次打开，都会跑一段真实逻辑，正好是这一节的完整例子：它把全部区域挨个过一遍（循环），逐个检查这个区域下面有没有照片或者备注（判断）；有，就把这个区域标成「点亮」，并记下点亮的日期。</p>
+    <p>几百个区域谁亮谁不亮，全是这一遍循环加判断算出来的，没有谁手工点。你后来看到的时间线、地图上的亮暗，也都建立在这一次计算的结果上。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「先把这段逻辑用分步骤的大白话讲一遍，我确认逻辑对了你再写代码。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「这个判断的条件到底是什么？条件不成立的时候，走哪条路、做什么？」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「逻辑你自己定，怎么快怎么来。」——判断条件就是业务规则，定错了，代码跑得再顺结果也是错的。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>条件</b><span>Condition</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一个只能回答「是」或「否」的问题，程序靠它决定走哪条路。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>循环</b><span>Loop</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把同一段处理重复执行很多遍，列表里有多少个，就处理多少次。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>函数</b><span>Function</span><span class="tap">点我看解释</span></div>
+        <div class="face back">打包好的一段代码：给它输入，它干活并给出输出，可以反复调用。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>参数</b><span>Parameter</span><span class="tap">点我看解释</span></div>
+        <div class="face back">调用函数时递进去的输入，比如把城市名递给挑照片的函数。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>返回值</b><span>Return Value</span><span class="tap">点我看解释</span></div>
+        <div class="face back">函数干完活吐出的结果，比如计数函数返回一个数字。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 用 for 循环处理一个装了 300 张照片的列表，循环里的处理会执行多少次？</div>
+      <button class="opt">只执行 1 次</button>
+      <button class="opt">300 次，一张一次</button>
+      <button class="opt">次数由电脑随机决定</button>
+      <div class="exp">解析：for 是逐个取、逐个处理，列表里有多少个就执行多少次。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2. 写法 count_city(photos, "重庆") 里，"重庆"扮演什么角色？</div>
+      <button class="opt">返回值</button>
+      <button class="opt">参数，也就是递给函数的输入</button>
+      <button class="opt">函数的名字</button>
+      <div class="exp">解析：括号里递进去的是参数；count_city 才是函数名；函数最后吐出的数字是返回值。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">3.（情景）你让 AI 改相册的点亮规则，改完后所有区域全亮了。最先怀疑哪里？</div>
+      <button class="opt">判断条件写松了或写反了，几乎恒成立</button>
+      <button class="opt">循环执行的次数太少</button>
+      <button class="opt">照片文件体积太大</button>
+      <div class="exp">解析：全亮说明「有照片才亮」这个条件形同虚设，先查判断条件，再谈别的。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4. Python 里，「点亮」这一行缩进着写在「if 有照片:」的下面，这个缩进表示什么？</div>
+      <button class="opt">只是排版好看，没有含义</button>
+      <button class="opt">「点亮」归 if 管，条件成立时才执行</button>
+      <button class="opt">这一行是注释，不会被执行</button>
+      <div class="exp">解析：Python 用缩进表示从属关系，缩进错位，逻辑就会跟着变。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">5. 同一段「挑某个城市照片」的代码，三个页面都要用。最好的做法是？</div>
+      <button class="opt">复制三份，分别粘贴到三个页面</button>
+      <button class="opt">每次用到都让 AI 重新写一遍</button>
+      <button class="opt">写成一个函数，三个地方都调用它</button>
+      <div class="exp">解析：函数打包一次、到处调用；将来改规则，只改这一处，三个页面同时生效。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">8</span>读代码：数一数某个城市有几张照片</h2>
+    <p>下面这段 Python 是教学示例：一个函数，遍历照片列表，挑出属于某个城市的计数。<b>点任意一行，看这一行在干什么。</b></p>
+    <div class="codecard">
+      <div class="cl" data-ln="1" data-e="定义一个函数，名叫 count_city（数城市）。它接收两个输入：照片列表 photos，和要找的城市名 city。">def count_city(photos, city):</div>
+      <div class="cl" data-ln="2" data-e="先准备一个计数器 n，从 0 开始，每数到一张就加一次。">    n = 0</div>
+      <div class="cl" data-ln="3" data-e="循环开始：把照片列表里的照片一张一张取出来，当前这一张临时叫 p。">    for p in photos:</div>
+      <div class="cl" data-ln="4" data-e="判断：这张照片的城市，等不等于要找的城市。就是从这张照片的字典里、按 city 这个名字取出它的城市。">        if p["city"] == city:</div>
+      <div class="cl" data-ln="5" data-e="相等才执行：计数器加 1。这一行缩进最深，说明它归上面的 if 管。">            n = n + 1</div>
+      <div class="cl" data-ln="6" data-e="循环全部跑完，把计数器 n 作为函数的输出送回去（return 就是返回）。">    return n</div>
+      <div class="cl" data-ln="7" data-e="造一个只有三张照片的小列表做试验：两张重庆、一张武汉，每张照片是一个小字典。">photos = [{"city": "重庆"}, {"city": "武汉"}, {"city": "重庆"}]</div>
+      <div class="cl" data-ln="8" data-e="调用函数数一数重庆有几张，再把结果打印出来：2。">print(count_city(photos, "重庆"))</div>
+    </div>
+    <div class="codeexp" id="codeExp">点任意一行，这里会显示这一行的中文解释。</div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-05.html">← 上一节：第 05 节</a>
+    <a href="lesson-07.html">下一节：第 07 节 组织 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '6';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+  document.querySelectorAll('.cl').forEach(function (el) {
+    el.onclick = function () {
+      document.querySelectorAll('.cl').forEach(function (x) { x.classList.remove('on'); });
+      el.classList.add('on');
+      document.getElementById('codeExp').innerHTML = '<b>第 ' + el.dataset.ln + ' 行：</b>' + el.dataset.e;
+    };
+  });
+</script>
+</body>
+</html>
