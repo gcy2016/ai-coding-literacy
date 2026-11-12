@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 19 节 · AI 编程工具是怎么工作的 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #1f4e78; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 6 和 AI 协作编程</div>
+  <div class="mod">第 19 节</div>
+  <h1>AI 编程工具是怎么工作的</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n">1</span> 一句话结论</div>
+    <div class="big">AI 每次开工都是新人，上下文给多少它知道多少。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：每次都要重新交接的外包工程师</h2>
+    <p class="ana">想象一位能力很强的外包工程师：手快、懂得多、什么活都能接。但他有个特点——每天来上班，记忆都是清空的。昨天聊过的背景、定过的规矩，他一概不记得，全靠你今天递给他的那摞交接材料。材料给得全，他干得又快又对；材料缺页，他就只能凭经验猜。现在的 AI 编程工具，就是这么一位工程师。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 178" role="img" aria-label="AI 工程师交接示意图">
+        <rect x="8" y="38" width="104" height="104" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><path d="M28 108 V68 h18 l6 8 h32 v32 z"/><line x1="38" y1="88" x2="74" y2="88"/><line x1="38" y1="97" x2="66" y2="97"/></g>
+        <text x="60" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">交接材料</text>
+        <text x="60" y="140" text-anchor="middle" font-size="12.5" fill="#77808f">就是上下文</text>
+        <text x="119" y="95" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <rect x="128" y="38" width="104" height="104" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><circle cx="180" cy="66" r="11"/><path d="M180 77 v20 M180 84 l-14 10 M180 84 l14 10 M180 97 l-11 16 M180 97 l11 16"/></g>
+        <text x="180" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">AI 工程师</text>
+        <text x="180" y="140" text-anchor="middle" font-size="12.5" fill="#77808f">能力很强的新人</text>
+        <text x="239" y="95" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <rect x="248" y="38" width="104" height="104" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><rect x="268" y="70" width="64" height="34" rx="4"/><path d="M288 70 v-8 h24 v8"/><line x1="268" y1="87" x2="332" y2="87"/></g>
+        <text x="300" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">它的工具箱</text>
+        <text x="300" y="140" text-anchor="middle" font-size="12.5" fill="#77808f">能读、能跑、能改</text>
+        <text x="180" y="166" text-anchor="middle" font-size="12.5" fill="#77808f">交接给多少，它就知道多少；没交代的，它只能猜</text>
+      </svg>
+      <div class="cap">图：材料（上下文）＋工程师（AI）＋工具箱（动手能力）</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>上下文：它这一次能看到的全部。</b>上下文（context）就是 AI 这次开工能看到的所有信息：你说的话、它读过的文件、之前的对话。它没看过的，一概不知道。所以开工前交代背景不是客套，是在给它发图纸。</p>
+    <div class="chips">
+      <div class="chip3"><b>你说的话</b><span>需求和规矩</span></div>
+      <div class="chip3"><b>它读的文件</b><span>代码和数据</span></div>
+      <div class="chip3"><b>聊过的对话</b><span>只限这一次</span></div>
+    </div>
+    <p><b>Token：它看东西的计量单位。</b>Token 是 AI 读写文字的计量单位，大致按字数算。对话越长、塞进去的文件越多，花掉的 token 就越多、费用就越高。这也是为什么长任务更贵——它每回一句话，都要把前面的材料重看一遍。</p>
+    <p><b>它为什么会「忘事」。</b>上下文窗口（context window）有上限，像一张大小固定的办公桌：东西摆满了，最早放上去的就会被收走。对话太长时，开头交代的细节会被压缩掉——不是它不上心，是桌子就这么大。</p>
+    <table class="cmp">
+      <tr><th style="width:24%"></th><th>现象</th><th>原因</th></tr>
+      <tr><td><b>越聊越贵</b></td><td>每轮都要重读全部材料</td><td>Token 按量算钱</td></tr>
+      <tr><td><b>聊久忘事</b></td><td>开头定的规矩想不起来</td><td>窗口有上限，早期内容被压缩</td></tr>
+    </table>
+    <p><b>它能动手，也会自信地出错。</b>现在的 AI 工具能读文件、跑命令、改代码，和程序员坐在电脑前差不多，所以能真干活。但它出错时的语气，和正确时一样肯定：会编造不存在的东西，会自信地读错数据。关键结论，必须复核。</p>
+    <table class="cmp">
+      <tr><th style="width:50%">它会犯的错</th><th>你怎么防</th></tr>
+      <tr><td>编造不存在的接口、结论</td><td>让它给出处，自己查原文</td></tr>
+      <tr><td>自信地读错、数错数据</td><td>换个独立方法再验一遍</td></tr>
+      <tr><td>顺手改得太多、动了不该动的</td><td>事先圈定范围，改完看清单</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：这门课就是活例子</h2>
+    <p>不用找远的例子，你正在上的这门课就是这么生产出来的：Claude 定大纲，是交接材料的源头；Muse 拿到大纲后，要自己去仓库里把代码读一遍、核实了才敢写进课里；最后你验收拍板。每一棒交出去，上下文都得重新给足，漏一页，下一棒就得猜。</p>
+    <p>也有交接翻车的真事：Muse 曾用临时凑的读取方法，去数一份 BLF 日志里的标记，报了「0 个」，说得很有把握；后来换成正确的方法重新一数，6 个标记一个都不少。错不在不认真，在方法——所以重要结论，永远要换个方法复核一遍。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「先别动手：把你准备读哪些文件、用什么方法处理，先讲一遍我听。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「这个数字很关键：换一种完全不同的方法再验一遍，两个对上了再告诉我。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「你检查过了是吧？那就按你说的办。」——它错的时候不会自己举手，把复核省掉，等于把关也一起省了。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>上下文</b><span>Context</span><span class="tap">点我看解释</span></div>
+        <div class="face back">AI 这一次能看到的全部信息：你的话、它读过的文件、之前的对话。没看到的，它一概不知道。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>Token</b><span>Token</span><span class="tap">点我看解释</span></div>
+        <div class="face back">AI 读写文字的计量单位，大致按字数算；用得越多，费用越高。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>上下文窗口</b><span>Context Window</span><span class="tap">点我看解释</span></div>
+        <div class="face back">上下文的容量上限，像一张固定大小的办公桌：摆满了，最早放的会被收走。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>幻觉</b><span>Hallucination</span><span class="tap">点我看解释</span></div>
+        <div class="face back">AI 一本正经地编造不存在的东西：假接口、假结论，语气和真的一样肯定。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>工具调用</b><span>Tool Call</span><span class="tap">点我看解释</span></div>
+        <div class="face back">AI 不只是说话，还能实际动手：读文件、跑命令、改代码，这些动作叫工具调用。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="2">
+      <div class="qt">1. AI 对你项目里某个文件的内容一无所知，最可能的原因是？</div>
+      <button class="opt">它今天状态不好</button>
+      <button class="opt">它的权限被关掉了</button>
+      <button class="opt">那个文件不在它的上下文里，它压根没读过</button>
+      <div class="exp">解析：它知道的只有这次看到的：没读过的文件、没交代的背景，对它来说等于不存在。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">2. 聊了几十轮之后，AI 把你开头定的规矩忘了，这是因为？</div>
+      <button class="opt">上下文窗口有上限，早期内容被压缩，细节先丢</button>
+      <button class="opt">它故意不听你的</button>
+      <button class="opt">你的规矩写得太短了</button>
+      <div class="exp">解析：不是态度问题，是桌子大小问题。重要规矩值得写进文件，让它每次开工都能重新读到。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3.（情景）AI 很肯定地说：「数过了，这个日志里一个标记都没有。」而你明明记得自己打过标记。最稳妥的做法是？</div>
+      <button class="opt">那就当没有，AI 不会错</button>
+      <button class="opt">让它换一种独立方法再数一遍，对上了再下结论</button>
+      <button class="opt">把日志删掉，重新录一段</button>
+      <div class="exp">解析：这正是真实发生过的事：第一种读法漏了数，换正确方法一数，6 个标记一个不少。它越肯定，你越要复核。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">4. 现在的 AI 编程工具能实际动手做的事，不包括哪一项？</div>
+      <button class="opt">读你指定的文件</button>
+      <button class="opt">在电脑上跑命令、看结果</button>
+      <button class="opt">保证自己的结论永远正确、不用任何人验收</button>
+      <div class="exp">解析：读、跑、改它都在行，唯独「保证正确」不在行——验收这一步，谁也替不了你。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">5. 想让 AI 一次把活干对，开工前最值得花时间的是？</div>
+      <button class="opt">把背景、目标、验收标准一次交代清</button>
+      <button class="opt">把语气说得客气一点</button>
+      <button class="opt">让它先写一千字的计划</button>
+      <div class="exp">解析：它每次开工都是新人：交接越完整，返工越少，这比任何客套都管用。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-18.html">← 上一节：第 18 节</a>
+    <a href="lesson-20.html">下一节：第 20 节 怎么提需求 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '19';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  var LG = String(parseInt(NO, 10)); if (LG !== NO) { if (st.done[LG]) st.done[NO] = true; if (st.quiz[LG]) st.quiz[NO] = st.quiz[LG]; }
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
