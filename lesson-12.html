@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 12 节 · API：程序之间怎么对话 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+  .ccard { background: #f6f9fc; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 8px 0; margin: 10px 0 8px; }
+  .cl { padding: 7px 12px; cursor: pointer; border-left: 3px solid transparent; }
+  .cl code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13.5px; white-space: pre-wrap; word-break: break-all; color: #24344d; }
+  .cl.on { background: #eef4fb; border-left-color: #2e75b6; }
+  .cnote { font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; line-height: 1.65; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 3 一个网页应用是怎么组成的</div>
+  <div class="mod">第 12 节</div>
+  <h1>API：程序之间怎么对话</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">API 就是程序之间的服务窗口：按格式递单，按格式拿结果。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：服务窗口</h2>
+    <p class="ana">去政务大厅办证：你不用认识里面的人，只要按窗口贴的格式填好单子、带齐证件递进去，里面办好再把结果从窗口递出来。程序之间办事也是这样：不进对方的门，只在窗口按约定交单、拿结果。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 178" role="img" aria-label="服务窗口式 API 示意图">
+        <rect x="10" y="46" width="76" height="92" rx="10" fill="#f6f9fc" stroke="#c9dcf2"/>
+        <g stroke="#77808f" stroke-width="1.8" fill="none"><rect x="30" y="62" width="36" height="24" rx="3"/><line x1="30" y1="70" x2="66" y2="70"/><line x1="38" y1="78" x2="58" y2="78"/></g>
+        <text x="48" y="104" text-anchor="middle" font-size="13.5" font-weight="700" fill="#40506b">你的程序</text>
+        <text x="48" y="122" text-anchor="middle" font-size="12.5" fill="#77808f">来办事的</text>
+        <rect x="140" y="46" width="80" height="92" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><rect x="158" y="60" width="44" height="30" rx="2"/><line x1="158" y1="75" x2="202" y2="75"/><line x1="180" y1="60" x2="180" y2="90"/></g>
+        <text x="180" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">API</text>
+        <text x="180" y="124" text-anchor="middle" font-size="12.5" fill="#77808f">服务窗口</text>
+        <rect x="274" y="46" width="76" height="92" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><circle cx="312" cy="70" r="10"/><path d="M298 92 a14 9 0 0 1 28 0"/></g>
+        <text x="312" y="108" text-anchor="middle" font-size="13.5" font-weight="700" fill="#146c3c">对方服务</text>
+        <text x="312" y="124" text-anchor="middle" font-size="12.5" fill="#77808f">里面办事的</text>
+        <text x="113" y="36" text-anchor="middle" font-size="12.5" fill="#2e75b6">递单：地址＋参数＋密钥 →</text>
+        <text x="247" y="36" text-anchor="middle" font-size="12.5" fill="#2e75b6">→</text>
+        <text x="180" y="164" text-anchor="middle" font-size="12.5" fill="#77808f">← 回单：结构化数据</text>
+      </svg>
+      <div class="cap">图：不进门，只在窗口交单、拿结果</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>API，是程序之间的窗口。</b>API（Application Programming Interface，应用程序编程接口）是事先约好的对话格式：一边按格式递单子，一边按格式回结果。人办事用鼠标点界面，程序办事靠它喊话。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>人用界面</th><th>程序用 API</th></tr>
+      <tr><td><b>谁在操作</b></td><td>人，眼睛看、手点</td><td>程序，按格式发请求</td></tr>
+      <tr><td><b>拿到什么</b></td><td>排版好的页面</td><td>结构化数据，接着加工</td></tr>
+    </table>
+    <p><b>递的单子上写三样。</b>地址：找哪个窗口办事；参数：要办的事的细节，比如一串经纬度；密钥：证明你有资格办的证件。三样齐了，对方才受理。</p>
+    <div class="chips">
+      <div class="chip3"><b>地址</b><span>找哪个窗口</span></div>
+      <div class="chip3"><b>参数</b><span>办事的细节</span></div>
+      <div class="chip3"><b>密钥</b><span>资格证件</span></div>
+    </div>
+    <p><b>回的单子，是结构化数据。</b>返回的多半是 JSON（第 05 节学过的那种格式）：字段固定、机器好读。它不是给人看的页面，是给程序接着加工的原料——相册拿到地址文字，再显示到页面上给你看。</p>
+    <table class="mini-table">
+      <tr><td>{ "address": "重庆市渝北区……", "district": "渝北区" }</td></tr>
+    </table>
+    <p><b>用别人的窗口，叫第三方服务。</b>地图、存储、支付这些能力，多数程序不自己建，直接调别人家的 API：省事，但要守人家的规矩、按人家的量计费；人家的窗口关了，你这块功能也跟着停。</p>
+    <div class="chips">
+      <div class="chip3"><b>省事</b><span>不用自己造轮子</span></div>
+      <div class="chip3"><b>守规矩</b><span>按人家的格式来</span></div>
+      <div class="chip3"><b>有依赖</b><span>人家停你也停</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：相册问腾讯地图要地址</h2>
+    <p><b>相册自己没有「坐标变地址」的本事。</b>你在相册里点定位，拿到的是经纬度数字；想显示中文地址，它就去调腾讯位置服务的 API：请求发到 https://apis.map.qq.com/ws/geocoder/v1/，带上 location（经纬度）和 key（密钥），对方回一段带地址的 JSON，它再显示到页面上。第 8 块有这次请求的逐行拆解。</p>
+    <p><b>它的密钥防盗用，靠域名白名单。</b>这个 key 是写在网页里的，谁打开页面都能看见——但腾讯那边设了规矩：只认从 gcy2016.github.io 发出的请求。别人把 key 抄走，换个网站用，腾讯直接不受理。代码注释里写的就是这个安排。</p>
+    <p><b>相册和 COS 之间，也是 API 对话。</b>网页读一个文件，用的是 getObject（读取文件）；存一个文件，用的是 putObject（写入文件）。你每次打开相册、保存相册，背后都是在跟 COS 的窗口递单、拿单。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这个功能是调谁的 API？请求里带什么、返回什么格式？先讲清再写。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「密钥准备怎么保管？有没有配域名白名单或权限限制？」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「这家服务要是停了或涨价了，这块功能有没有退路？」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「你把定位功能加上。」——没说用哪家服务、地址显示成什么样，AI 只能乱猜乱接。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>API</b><span>Application Programming Interface</span><span class="tap">点我看解释</span></div>
+        <div class="face back">应用程序编程接口：程序之间约好的对话方式，按固定格式发请求、拿数据。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>接口</b><span>Interface</span><span class="tap">点我看解释</span></div>
+        <div class="face back">两个东西打交道的「窗口」统称。API 是程序之间最常见的那种接口。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>API 密钥</b><span>API Key</span><span class="tap">点我看解释</span></div>
+        <div class="face back">调用 API 的证件，能证明你的身份和资格；也能被盗用，要保管、要设限。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>参数</b><span>Parameter</span><span class="tap">点我看解释</span></div>
+        <div class="face back">请求里带的办事细节：比如要查的经纬度、要找的编号。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>第三方服务</b><span>Third-party Service</span><span class="tap">点我看解释</span></div>
+        <div class="face back">别人家提供的现成能力，像地图、存储、支付，你调它的 API 来用。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. API 这套对话方式，是给谁用的？</div>
+      <button class="opt">给人用鼠标点的按钮</button>
+      <button class="opt">程序和程序之间</button>
+      <button class="opt">给设计师看的图纸</button>
+      <div class="exp">解析：API 是程序之间的窗口：按格式发请求，按格式拿数据，不需要人参与。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">2. 一次 API 请求里，通常不会带哪一样？</div>
+      <button class="opt">地址：找哪个窗口</button>
+      <button class="opt">参数：要办的事的细节</button>
+      <button class="opt">一整页的排版样式</button>
+      <div class="exp">解析：请求带地址、参数、密钥；返回的是数据，排版是拿到数据之后前端自己的事。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">3. API 密钥最像下面哪样东西？</div>
+      <button class="opt">一张办事证件</button>
+      <button class="opt">一个文件夹</button>
+      <button class="opt">一段广告词</button>
+      <div class="exp">解析：密钥证明「你是谁、有没有资格办」；正因为是证件，被人抄走就能冒名使用。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4.（情景）AI 说：「地图的 key 我直接写在网页里了，反正配了域名白名单。」你该怎么判断？</div>
+      <button class="opt">完全不行，立刻让它删掉重做</button>
+      <button class="opt">可以：白名单只认指定域名发出的请求，别人抄走也用不了——但先确认白名单真的配上了</button>
+      <button class="opt">让它把 key 发到群里，让大家帮忙备份</button>
+      <div class="exp">解析：公开网页里的 key 靠域名白名单兜底，是相册正在用的做法；前提是白名单确实生效，值得当场确认一句。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5. 相册和 COS 对话时，getObject 是什么意思？</div>
+      <button class="opt">删除一个文件</button>
+      <button class="opt">读取一个文件</button>
+      <button class="opt">把文件压缩打包</button>
+      <div class="exp">解析：get 是「取」，getObject 就是从 COS 读一个文件；写文件用的是 putObject。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">8</span>读代码（点一行，看一行）</h2>
+    <p>下面是相册问腾讯地图要地址时，那次<b>请求</b>的拆解（示意，坐标和返回内容是简化的）。点任意一行，看这一行在递什么。</p>
+    <div class="ccard">
+      <div class="cl" data-note="窗口地址：去腾讯位置服务的这个窗口办事。GET 是「查询」的意思——这次只问问题，不改对方任何东西。"><code>GET https://apis.map.qq.com/ws/geocoder/v1/</code></div>
+      <div class="cl" data-note="带的参数之一：location 是要查的经纬度（这里是示意坐标）。这一行在问：「这个点，是什么地址？」"><code>?location=29.56,106.55</code></div>
+      <div class="cl" data-note="带的证件：key 就是 API 密钥，证明有资格调这个服务。真实密钥不在这里示众；而且它绑了域名白名单，抄走也用不了。"><code>&amp;key=相册的密钥</code></div>
+      <div class="cl" data-note="对方递回来的结构化数据（JSON 示意）：里面装着查到的中文地址。相册的程序拿到它，再把地址显示到页面上给你看。"><code>← 返回 { "address": "重庆市……" }</code></div>
+    </div>
+    <div class="cnote" id="cnote">点上面任意一行，这里会显示这一行的意思。</div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-11.html">← 上一节：第 11 节 网络基础</a>
+    <a href="lesson-13.html">下一节：第 13 节 数据存在哪 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '12';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+  document.querySelectorAll('.cl').forEach(function (l) {
+    l.onclick = function () {
+      document.querySelectorAll('.cl').forEach(function (x) { x.classList.remove('on'); });
+      l.classList.add('on');
+      document.getElementById('cnote').textContent = l.dataset.note;
+    };
+  });
+</script>
+</body>
+</html>
