@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 16 节 · GitHub：分支与协作 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 4 Git 与协作</div>
+  <div class="mod">第 16 节</div>
+  <h1>GitHub：分支与协作</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">GitHub 是大家围着同一份代码协作的地方。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：平行世界与合并</h2>
+    <p class="ana">主线（main，大家共用的正式版本）好比一条主路。想试一个大改动，先旁开一条岔路随便折腾，主路照常通行；岔路上验证没问题，再并回主路。并的时候像审修订稿：改动一行行红绿对照摆出来，看过、点头，才算数。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 190" role="img" aria-label="分支与合并示意图">
+        <line x1="20" y1="128" x2="340" y2="128" stroke="#2e75b6" stroke-width="2.5"/>
+        <circle cx="52" cy="128" r="7" fill="#fff" stroke="#2e75b6" stroke-width="1.8"/>
+        <circle cx="150" cy="128" r="7" fill="#fff" stroke="#2e75b6" stroke-width="1.8"/>
+        <circle cx="308" cy="128" r="7" fill="#fff" stroke="#2e75b6" stroke-width="1.8"/>
+        <path d="M86 122 C 130 62, 190 56, 244 108" fill="none" stroke="#d9a13b" stroke-width="2.2"/>
+        <circle cx="150" cy="72" r="7" fill="#fff" stroke="#d9a13b" stroke-width="1.8"/>
+        <circle cx="206" cy="76" r="7" fill="#fff" stroke="#d9a13b" stroke-width="1.8"/>
+        <text x="52" y="156" text-anchor="middle" font-size="13" fill="#40506b">主线</text>
+        <text x="150" y="46" text-anchor="middle" font-size="13" fill="#8a5a12">分支：岔开一条线随便改</text>
+        <text x="308" y="156" text-anchor="middle" font-size="13" fill="#40506b">合并回主线</text>
+        <text x="180" y="182" text-anchor="middle" font-size="12.5" fill="#77808f">主线一直能用，分支验证好了才并回来</text>
+      </svg>
+      <div class="cap">图：分支（branch）与合并（merge）——岔开、验证、并回</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>分支：另开一条线改，不影响主线。</b>分支（branch）是从主线某个存档点岔出去的一条独立线。在分支上怎么改、怎么提交，主线都纹丝不动；改砸了删掉分支就行，改好了再申请并回去。大改动、试验性改动，都该先上分支。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>从主线岔出一条分支</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>在分支上改、提交、验证</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>发合并请求，请人审查</div><div class="farr">↓</div>
+      <div class="fstep"><i>4</i>审查通过，合并回主线</div>
+    </div>
+    <p><b>合并请求：先审后并的那道关。</b>合并请求（Pull Request，简称 PR）就是「我这条分支改好了，申请并回主线」。它不会立刻生效：审查的人把这次改动逐行看过、讨论过、点了同意，才真正合并。这道关拦的是「没人看过的大改动直接上线」。</p>
+    <p><b>Issue 和冲突：记事本和撞车。</b>Issue（问题帖）是仓库里的记事本：需求、问题、待办都开帖记下，逐条讨论、逐件销账，不靠口头传话。冲突（conflict）则是两条线改了同一处、合并时 Git 判不了谁对，就停下来等人裁决，绝不自作主张。</p>
+    <p><b>.gitignore 和 diff：一个管不进、一个管看清。</b>.gitignore（忽略清单）写明哪些文件不许进仓库，密钥、临时文件都列里面，防误传。看改动靠 diff（差异对照）：删掉的行标红、新增的行标绿，改了哪几行一目了然，审查主要看它。</p>
+    <table class="mini-table">
+      <tr><th>diff 长这样</th><th>意思</th></tr>
+      <tr><td style="color:#cf3f38">- 旧的一行（红色）</td><td>这一行被删掉了</td></tr>
+      <tr><td style="color:#1d9e57">+ 新的一行（绿色）</td><td>这一行是新加的</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：CANLink 的协作实录</h2>
+    <p><b>问题全记在 Issue 里。</b>CANLink 攒下的问题都记在 AI_Corp 仓库的第 12 号 Issue 里：一条评论派一件活、一条回复报一个结果，哪件做完、哪件还欠着，翻帖子就清楚，不靠谁记性好。</p>
+    <p><b>两种节奏都是真的。</b>canlink 的 BLF 导出是个不小的功能，当时走了第 23 号 Pull Request：开分支写好、审查确认没问题，才合并进主线。而平时的日常小改——改个文案、修个小毛病——是直接推主线的。重要的走 PR 把关、小改直推图快，这不是偷懒，是按风险分级。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这个改动不小，先开分支走 PR，我看过 diff 再合并。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「问题先记到 Issue 里，一件一件来，别口头说完就忘。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「合并之前把 diff 发我看，确认只改了该改的地方。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「这个大改动也直接推主线吧，不用审了。」——小改直推没问题，大改动跳过审查，出事时连改了哪几行都没人看过。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>分支</b><span>Branch</span><span class="tap">点我看解释</span></div>
+        <div class="face back">从主线岔出去的一条独立线，在上面怎么改都不影响主线，验证好再并回来。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>合并请求</b><span>Pull Request</span><span class="tap">点我看解释</span></div>
+        <div class="face back">申请把分支的改动并回主线：先给人审查、点头，才真正合并，简称 PR。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>问题帖</b><span>Issue</span><span class="tap">点我看解释</span></div>
+        <div class="face back">仓库里的记事帖：需求、问题、待办都开帖记录，一条条讨论、一件件销账。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>冲突</b><span>Conflict</span><span class="tap">点我看解释</span></div>
+        <div class="face back">两边改了同一处，合并时 Git 判不了谁对，停下来等人裁决。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>差异对照</b><span>Diff</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一次改动的红绿对照稿：删掉的行标红、新增的行标绿，改了哪一目了然。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="0">
+      <div class="qt">1. 分支是用来干什么的？</div>
+      <button class="opt">另开一条线改东西，改好之前不影响主线</button>
+      <button class="opt">把仓库复制一份存到 U 盘里</button>
+      <button class="opt">给代码文件改个名字</button>
+      <div class="exp">解析：分支就是岔路：上面怎么折腾，主线都照常能用；验证好了才并回来。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2. 合并请求（PR）最关键的一步是什么？</div>
+      <button class="opt">起个好听的标题</button>
+      <button class="opt">先审后并：有人看过改动、点头了才合并</button>
+      <button class="opt">提交得越快越好，赶在下班前</button>
+      <div class="exp">解析：PR 的价值在那道审查关——大改动没人看过就上线，风险全裸奔。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">3. 看 diff 时发现一大片红色的行，说明什么？</div>
+      <button class="opt">代码报错了，红了一片</button>
+      <button class="opt">这些行被标成了重点</button>
+      <button class="opt">这些行在这次改动里被删掉了</button>
+      <div class="exp">解析：diff 里红色是删除、绿色是新增。大片红色先别慌，看清删的是不是该删的。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">4.（情景）两个 AI 先后改了同一段代码，合并时 Git 报了冲突。你该怎么办？</div>
+      <button class="opt">让人（或你自己）看清两边各改了什么，裁决留哪份、怎么拼，再合并</button>
+      <button class="opt">随便选一份覆盖，另一份不要了</button>
+      <button class="opt">把仓库删掉，重新建一个干净的</button>
+      <div class="exp">解析：冲突是 Git 在喊「这处我判不了」。随便覆盖等于闭眼扔掉一份改动，必须人工裁决。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5. 密钥文件为什么要提前写进 .gitignore？</div>
+      <button class="opt">写了能让密钥更难破解</button>
+      <button class="opt">让 Git 不把它们收进仓库，避免顺着提交泄露出去</button>
+      <button class="opt">写了之后文件会自动加密</button>
+      <div class="exp">解析：.gitignore 是「不许进仓库」的名单。密钥一旦提交进历史，想撤干净非常麻烦，所以要从源头拦住。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-15.html">← 上一节：第 15 节 Git：给代码存档</a>
+    <a href="lesson-17.html">下一节：第 17 节 嵌入式与固件 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '16';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  var LG = String(parseInt(NO, 10)); if (LG !== NO) { if (st.done[LG]) st.done[NO] = true; if (st.quiz[LG]) st.quiz[NO] = st.quiz[LG]; }
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
