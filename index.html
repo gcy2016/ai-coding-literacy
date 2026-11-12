@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 编程通识课 · 目录 | 写给不写代码、但要用好 AI 编程工具的人</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.7; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 18px 14px 48px; }
+  .hero { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 16px; padding: 22px 18px; }
+  .hero h1 { font-size: 25px; margin: 0 0 6px; line-height: 1.35; }
+  .hero p { margin: 6px 0; font-size: 14.5px; opacity: .92; }
+  .prog { background: #fff; border-radius: 14px; padding: 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .prog .t { display: flex; justify-content: space-between; font-size: 14px; color: #40506b; margin-bottom: 8px; }
+  .bar { height: 10px; background: #e6edf5; border-radius: 6px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: #07c160; width: 0; transition: width .4s; }
+  .go { display: block; text-align: center; background: #2e75b6; color: #fff; text-decoration: none; border-radius: 12px; padding: 13px; font-weight: 700; margin-top: 12px; }
+  .mod-t { font-size: 15px; font-weight: 700; color: #1f4e78; margin: 22px 2px 4px; }
+  .mod-d { font-size: 13px; color: #8a94a6; margin: 0 2px 8px; }
+  .row { display: flex; align-items: center; gap: 11px; background: #fff; border-radius: 12px; padding: 13px 14px; margin: 8px 0; box-shadow: 0 1px 3px rgba(20,40,80,.05); text-decoration: none; color: #222; }
+  .row .no { width: 34px; height: 34px; border-radius: 50%; background: #eef4fb; color: #1f4e78; font-weight: 700; font-size: 13.5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .row .tt { flex: 1; font-size: 15.5px; line-height: 1.45; }
+  .row .st { font-size: 12.5px; color: #8a94a6; flex-shrink: 0; }
+  .row.live .st { color: #2e75b6; font-weight: 700; }
+  .row.done .no { background: #07c160; color: #fff; }
+  .row.done .st { color: #07c160; font-weight: 700; }
+  .row.idle { opacity: .62; }
+  .foot { font-size: 12.5px; color: #a5b3c6; text-align: center; margin-top: 26px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>AI 编程通识课</h1>
+    <p>写给「不写代码、但要用好 AI 编程工具」的人：听得懂 AI 在说什么、能把需求说清楚、能判断结果对不对。</p>
+    <p>共 23 节，每节 10–15 分钟，碎片时间在手机上看。不动手写代码，只练「看懂」和「会说」。</p>
+  </div>
+
+  <div class="prog">
+    <div class="t"><span>学习进度</span><span id="progTxt">已完成 0 / 23 节</span></div>
+    <div class="bar"><i id="progBar"></i></div>
+    <a class="go" href="lesson-09.html">先看样板节：第 09 节 · 三件套 →</a>
+  </div>
+
+  <div id="catalog"></div>
+
+  <div class="foot">大纲：Claude · 内容制作：Muse · 验收：郭灿阳<br>进度和小测结果保存在本机浏览器里，换设备不互通。</div>
+</div>
+<script>
+  var MODULES = [
+    { t: '模块 0 · 开场', d: '先说清楚这门课学什么、不学什么。', items: [
+      ['00', '导读：你不需要会写，但需要会看、会说、会验收'] ] },
+    { t: '模块 1 · 程序是什么', d: '代码放在哪、怎么跑起来、为什么需要一堆「环境」。', items: [
+      ['01', '代码是怎么跑起来的'], ['02', '文件、路径和项目结构'], ['03', '终端：AI 为什么总在敲命令'], ['04', '依赖与环境'] ] },
+    { t: '模块 2 · 看懂代码的骨架', d: '少量读代码的核心部分，统一用 Python 举例。', items: [
+      ['05', '数据：变量、类型、列表、字典、JSON'], ['06', '逻辑：判断、循环、函数'], ['07', '组织：模块、导入、类，以及读代码的方法'], ['08', '报错与调试'] ] },
+    { t: '模块 3 · 一个网页应用是怎么组成的', d: '以旅行相册为主线，把前端、后端、数据库、网络、部署串起来。', items: [
+      ['09', '前端、后端、数据库：三件套'], ['10', '前端：HTML、CSS、JavaScript'], ['11', '网络基础'], ['12', 'API：程序之间怎么对话'], ['13', '数据存在哪'], ['14', '部署：从自己电脑到别人能访问'] ] },
+    { t: '模块 4 · Git 与协作', d: 'AI 改代码全靠它记录和回退，最值得学扎实。', items: [
+      ['15', 'Git：给代码存档'], ['16', 'GitHub：分支与协作'] ] },
+    { t: '模块 5 · 当代码遇到硬件', d: '回到本行，把软件概念和汽车电子接起来。', items: [
+      ['17', '嵌入式与固件'], ['18', '数据处理脚本：让 AI 帮你分析日志'] ] },
+    { t: '模块 6 · 和 AI 协作编程', d: '把前面所有概念用起来，这是整门课的落脚点。', items: [
+      ['19', 'AI 编程工具是怎么工作的'], ['20', '怎么提需求'], ['21', '怎么验收，怎么保底'], ['22', '结业：一个功能从想法到上线'] ] }
+  ];
+  var st = {}; try { st = JSON.parse(localStorage.getItem('aicourse.v1')) || {}; } catch (e) {}
+  var done = st.done || {};
+  var total = 0, doneN = 0, html = '';
+  MODULES.forEach(function (m) {
+    html += '<div class="mod-t">' + m.t + '</div><p class="mod-d">' + m.d + '</p>';
+    m.items.forEach(function (it) {
+      total++;
+      var no = it[0], title = it[1], isDone = !!done[no];
+      if (isDone) doneN++;
+      if (no === '09') {
+        html += '<a class="row ' + (isDone ? 'done' : 'live') + '" href="lesson-09.html"><div class="no">' + no + '</div><div class="tt">' + title + '（样板节）</div><div class="st">' + (isDone ? '已打卡 ✓' : '开始学 →') + '</div></a>';
+      } else {
+        html += '<div class="row idle"><div class="no">' + no + '</div><div class="tt">' + title + '</div><div class="st">待制作</div></div>';
+      }
+    });
+  });
+  document.getElementById('catalog').innerHTML = html;
+  document.getElementById('progTxt').textContent = '已完成 ' + doneN + ' / ' + total + ' 节';
+  document.getElementById('progBar').style.width = (total ? (doneN / total * 100) : 0) + '%';
+</script>
+</body>
+</html>
