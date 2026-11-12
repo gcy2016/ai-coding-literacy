@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 02 节 · 文件、路径和项目结构 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 1 程序是什么</div>
+  <div class="mod">第 02 节</div>
+  <h1>文件、路径和项目结构</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">文件靠扩展名认身份，靠路径找位置。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：文件柜与门牌号</h2>
+    <p class="ana">单位的档案室里，资料装进一个个档案袋，档案袋按类别塞进文件柜的抽屉，每个抽屉贴着标签。电脑里一模一样：文件是档案袋，文件夹是抽屉和柜子。再给每个位置编上门牌号——哪栋楼、哪层、哪间——找任何一份资料，照着门牌号就能走到。电脑里的「门牌号」就叫路径。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 168" role="img" aria-label="文件柜与门牌号示意图">
+        <rect x="10" y="34" width="104" height="104" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><path d="M40 66 v-6 a3 3 0 0 1 3-3 h10 l4 5 h25 a3 3 0 0 1 3 3 v17 a3 3 0 0 1-3 3 H43 a3 3 0 0 1-3-3 z"/></g>
+        <text x="62" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">文件</text>
+        <text x="62" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">档案袋 · 装东西</text>
+        <rect x="128" y="34" width="104" height="104" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><rect x="156" y="50" width="48" height="36"/><line x1="156" y1="62" x2="204" y2="62"/><line x1="156" y1="74" x2="204" y2="74"/><line x1="174" y1="56" x2="186" y2="56"/><line x1="174" y1="68" x2="186" y2="68"/><line x1="174" y1="80" x2="186" y2="80"/></g>
+        <text x="180" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">文件夹</text>
+        <text x="180" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">抽屉 · 分门别类</text>
+        <rect x="246" y="34" width="104" height="104" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><line x1="298" y1="50" x2="298" y2="88"/><path d="M298 54 h22 l-5 6 5 6 h-22 z"/><path d="M298 72 h-22 l5 6 -5 6 h22 z"/></g>
+        <text x="298" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">路径</text>
+        <text x="298" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">门牌号 · 照着找</text>
+        <text x="121" y="90" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="239" y="90" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="180" y="160" text-anchor="middle" font-size="12.5" fill="#77808f">扩展名是袋子上的标签，路径是它的门牌号</text>
+      </svg>
+      <div class="cap">图：文件、文件夹、路径，各管一件事</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>文件和扩展名。</b>代码、照片、数据，在电脑里都以文件（file）的形式存着。文件名最后的后缀叫扩展名（extension），是文件的身份证：.py 是 Python 代码，.json 是数据，.md 是说明文档。看扩展名，先猜出这是什么。</p>
+    <table class="mini-table">
+      <tr><th>扩展名</th><th>是什么</th></tr>
+      <tr><td>.html</td><td>网页文件</td></tr>
+      <tr><td>.js / .py</td><td>JavaScript / Python 源代码</td></tr>
+      <tr><td>.json</td><td>数据文件</td></tr>
+      <tr><td>.md</td><td>Markdown 说明文档</td></tr>
+      <tr><td>.pdf</td><td>正式文档</td></tr>
+    </table>
+    <p><b>文件夹和项目结构。</b>文件不会散着放，而是装进文件夹（folder）分门别类。一个项目就是一个总文件夹，里面通常有说明文档、源码、数据和测试。AI 嘴里的「项目根目录」，说的就是这个总文件夹本身。</p>
+    <div class="chips">
+      <div class="chip3"><b>说明文档</b><span>README：项目说明书</span></div>
+      <div class="chip3"><b>源码</b><span>真正干活的代码</span></div>
+      <div class="chip3"><b>数据与测试</b><span>材料和查错的</span></div>
+    </div>
+    <p><b>路径：文件的门牌号。</b>路径（path）写明文件住在哪。绝对路径（absolute path）从最顶层写全，地址完整、不会认错；相对路径（relative path）从你当前的位置出发，只说「往前两间」。两种写法，可以指同一个文件。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>绝对路径</th><th>相对路径</th></tr>
+      <tr><td><b>写法</b></td><td>/home/user/项目/data.json</td><td>../data/data.json</td></tr>
+      <tr><td><b>好处</b></td><td>在哪都指同一处</td><td>短，跟着项目搬家也不怕</td></tr>
+      <tr><td><b>风险</b></td><td>换台电脑可能失效</td><td>起点不对就指错地方</td></tr>
+    </table>
+    <p><b>为什么这和你有关。</b>AI 干活时满嘴都是路径：它说「改了 docs 里那个文件」，你得知道动的是哪一份；它说「文件找不到」，多半是路径写错了，不是文件真丢了。看懂路径，验收时才对得上号。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>报错说「文件找不到」</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>先查路径写对没有</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>再确认文件还在不在</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：就看这门课</h2>
+    <p><b>这门课的仓库（ai-coding-literacy）就是现成的例子。</b>你现在看的课就住在这里，顶层摊开是这么几样：</p>
+    <table class="mini-table">
+      <tr><td>index.html</td><td>课程首页</td></tr>
+      <tr><td>lesson-09.html</td><td>一节课的页面</td></tr>
+      <tr><td>outline.pdf</td><td>课程大纲</td></tr>
+      <tr><td>AI_TEAM.md / CLAUDE.md</td><td>给 AI 看的说明文件</td></tr>
+    </table>
+    <p><b>CANLink 仓库分得更细。</b>docs/ 文件夹放网页应用，test/ 放自测脚本，firmware/ 放固件源码——一个文件夹装一类东西，找什么先想它该在哪类里。</p>
+    <p><b>认扩展名就能认个大概。</b>这个项目里：.md 是 Markdown 说明文档，.json 是数据文件，.js、.py 是源代码。AI 报文件名时，你先看后缀，心里就有数了。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「你刚才改的文件，给我完整路径，我去仓库里对一下。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「先讲一遍这个项目的结构：每个文件夹各放什么。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「新建的文件放哪个目录？说清了再动手，别随手扔在根目录。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「那个文件你改一下。」——项目里同名的文件可能有好几份，AI 很容易改错一份。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>扩展名</b><span>Extension</span><span class="tap">点我看解释</span></div>
+        <div class="face back">文件名最后的后缀，如 .py、.json，是文件的身份证，说明它是什么类型。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>路径</b><span>Path</span><span class="tap">点我看解释</span></div>
+        <div class="face back">写明一个文件或文件夹位置的那串文字，就是它的门牌号。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>目录</b><span>Directory</span><span class="tap">点我看解释</span></div>
+        <div class="face back">就是文件夹的正式说法；最外层那个叫根目录，项目总文件夹就是它。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>绝对路径</b><span>Absolute Path</span><span class="tap">点我看解释</span></div>
+        <div class="face back">从最顶层写起的完整地址，你站在哪儿，它都准确指向同一处。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>相对路径</b><span>Relative Path</span><span class="tap">点我看解释</span></div>
+        <div class="face back">以你当前所在目录为起点写的地址，换个起点，指的地方就可能变。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 看到一个文件叫 report.json，它最可能是什么？</div>
+      <button class="opt">一段 Python 源代码</button>
+      <button class="opt">一份数据文件</button>
+      <button class="opt">一张照片</button>
+      <div class="exp">解析：.json 是数据文件的扩展名，里面装的是结构化的数据，不是代码也不是图片。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2. 扩展名的作用是？</div>
+      <button class="opt">让文件名好看一点</button>
+      <button class="opt">告诉你和电脑：这是什么类型的文件</button>
+      <button class="opt">决定文件能有多大</button>
+      <div class="exp">解析：扩展名是文件的身份证。系统靠它决定用什么方式打开，你靠它先猜出文件是干什么的。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3. AI 说「文件在 ../data 目录下」，它用的是哪种路径？</div>
+      <button class="opt">绝对路径</button>
+      <button class="opt">相对路径</button>
+      <button class="opt">临时路径</button>
+      <div class="exp">解析：带 .. 的是从当前位置出发数步数的写法，是相对路径。换个起点，它指的地方就跟着变。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4.（情景）程序报错「FileNotFoundError: data.json」（找不到文件），最可能的原因是？</div>
+      <button class="opt">数据文件被病毒删掉了</button>
+      <button class="opt">路径写错了，或者文件不在它找的那个目录里</button>
+      <button class="opt">电脑没联网，下载不到</button>
+      <div class="exp">解析：这类报错绝大多数是路径对不上：名字拼错、放错目录、相对路径的起点不对。先查路径，再怀疑文件丢了。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">5.（情景）你让 AI 把新章节放进仓库，验收时最先确认什么？</div>
+      <button class="opt">文件名对不对、放的目录对不对</button>
+      <button class="opt">页面字体好不好看</button>
+      <button class="opt">文件够不够大</button>
+      <div class="exp">解析：先对位置和名字。放错目录、起错名，内容写得再好也等于没交付。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-01.html">← 上一节：第 01 节 代码是怎么跑起来的</a>
+    <a href="lesson-03.html">下一节：第 03 节 终端：AI 为什么总在敲命令 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '2';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
