@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 15 节 · Git：给代码存档 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 4 Git 与协作</div>
+  <div class="mod">第 15 节</div>
+  <h1>Git：给代码存档</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">Git 是代码的存档点：改动可存、可查、可退。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：游戏存档点</h2>
+    <p class="ana">玩游戏打大 Boss 之前先存个档，打输了读档重来，不用从头再玩。Git（一种分布式版本控制工具，专管代码的历史记录）就是给代码装的存档系统：每改一段就存一个档，存档连成一条线，哪个档是好的、哪个档出了问题，一翻记录全知道。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 176" role="img" aria-label="存档点时间线示意图">
+        <line x1="24" y1="88" x2="336" y2="88" stroke="#c9dcf2" stroke-width="2.5"/>
+        <circle cx="62" cy="88" r="15" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.8"/>
+        <circle cx="62" cy="88" r="4.5" fill="#2e75b6"/>
+        <text x="62" y="126" text-anchor="middle" font-size="13" fill="#40506b">存档一</text>
+        <text x="62" y="143" text-anchor="middle" font-size="12.5" fill="#77808f">第一次提交</text>
+        <circle cx="180" cy="88" r="15" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.8"/>
+        <circle cx="180" cy="88" r="4.5" fill="#2e75b6"/>
+        <text x="180" y="126" text-anchor="middle" font-size="13" fill="#40506b">存档二</text>
+        <text x="180" y="143" text-anchor="middle" font-size="12.5" fill="#77808f">改了登录页</text>
+        <circle cx="298" cy="88" r="15" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.8"/>
+        <circle cx="298" cy="88" r="4.5" fill="#d9a13b"/>
+        <text x="298" y="126" text-anchor="middle" font-size="13" fill="#40506b">存档三</text>
+        <text x="298" y="143" text-anchor="middle" font-size="12.5" fill="#77808f">这版改坏了</text>
+        <path d="M292 62 C 240 26, 128 26, 72 58" fill="none" stroke="#1d9e57" stroke-width="1.8" stroke-dasharray="5 4"/>
+        <path d="M64 52 l6 10 l10 -4" fill="none" stroke="#1d9e57" stroke-width="1.8"/>
+        <text x="182" y="24" text-anchor="middle" font-size="13" fill="#146c3c">改坏了？读档，退回存档一</text>
+        <text x="180" y="168" text-anchor="middle" font-size="12.5" fill="#77808f">每个存档都带说明，历史一条线排开</text>
+      </svg>
+      <div class="cap">图：提交就是存档点，历史记录就是存档列表</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>仓库和提交：存档装在哪、怎么存。</b>仓库（repository）就是项目文件夹外加它的全部历史。提交（commit）就是一次存档：把当前改动打包记下，再附一句说明——改了什么、为什么改。存档多了，连起来就是历史记录（history）。</p>
+    <table class="mini-table">
+      <tr><th>存档（提交）</th><th>说明写的什么</th></tr>
+      <tr><td>存档一</td><td>项目初始化</td></tr>
+      <tr><td>存档二</td><td>修复登录页按钮错位</td></tr>
+      <tr><td>存档三</td><td>新增深色模式（这版有问题）</td></tr>
+    </table>
+    <p><b>本地与远程：同一代码，两份副本。</b>本地（local）是你电脑上的那份，改和提交都在这里；远程（remote）是 GitHub 上的那份，是共用的正本。两份靠推送和拉取同步：推送（push）把本地新提交送上远程，拉取（pull）把远程新提交取回。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>本地</th><th>远程</th></tr>
+      <tr><td><b>在哪</b></td><td>自己的电脑</td><td>GitHub 上</td></tr>
+      <tr><td><b>干什么</b></td><td>改代码、提交</td><td>共用正本、备份</td></tr>
+      <tr><td><b>怎么同步</b></td><td colspan="2">推送 push 送上去 · 拉取 pull 取回来</td></tr>
+    </table>
+    <p><b>回到上一个版本：两种退法。</b>改坏了不用慌，历史里每个版本都在。一种是读档重来（reset，把进度直接拨回某个旧存档，后面的当没发生过）；一种是补一次「反悔存档」（revert，新提交一次，内容正好是把上次改动抵消掉，历史不删、账目清楚）。</p>
+    <div class="chips">
+      <div class="chip3"><b>reset</b><span>读档重来，历史改写</span></div>
+      <div class="chip3"><b>revert</b><span>补一次反悔，历史保留</span></div>
+    </div>
+    <p><b>为什么 AI 改代码离不开它。</b>AI 改得快，也可能改坏。有了 Git，每次改动前有存档、改动后有说明，出了问题能精确定位是哪一次改坏的、退回哪一步。没有这套东西，AI 改一百行出了错，你只能对着一团乱麻发呆。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：这门课的仓库</h2>
+    <p>你现在看的这门课，每一次上线都是一次提交。仓库有变更记录制度：<b>提交说明必须写清谁改的、改了什么、为什么改</b>——以后翻历史，不用猜当时发生了什么。</p>
+    <p>今天（2026-11-12）就出过一次真实的推送被拒：远端的仓库里已经有了新的提交，这边没先拉取就直接推送，Git 当场拦下——它怕你把别人的新改动盖掉。先拉再推，就没事了。这正是 Git 的脾气：宁可拦你一下，也不许互相覆盖。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「动手改之前先提交一次，改坏了我能退回来。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「推送之前先拉取一下，看远端有没有新的提交。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「这次提交的说明写清楚：谁改的、改了什么、为什么。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「直接覆盖上去就行，不用管远端。」——远端可能有别人刚提交的改动，覆盖掉就找不回来了。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>Git</b><span>Git</span><span class="tap">点我看解释</span></div>
+        <div class="face back">分布式的版本控制工具，记录代码的每一次改动，随时能查、能退。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>仓库</b><span>Repository</span><span class="tap">点我看解释</span></div>
+        <div class="face back">项目文件夹加上它的全部改动历史，是 Git 管理代码的基本单位。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>提交</b><span>Commit</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一次带说明的存档：把当时的改动打包记进历史，就叫一次提交。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>推送</b><span>Push</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把本地的新提交送上远程仓库，让那份共用的正本跟上你的进度。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>拉取</b><span>Pull</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把远程仓库的新提交取回本地，让你这份副本跟上大家的进度。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="0">
+      <div class="qt">1. Git 最核心的本事是什么？</div>
+      <button class="opt">每一次改动都留档，随时能查、能退回</button>
+      <button class="opt">把代码写得更快</button>
+      <button class="opt">把文件存到云盘上备份</button>
+      <div class="exp">解析：Git 是版本控制工具，管的是「历史」：谁改的、改了什么、怎么退回去。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2. 一次「提交」到底是什么？</div>
+      <button class="opt">把文件发给同事看一眼</button>
+      <button class="opt">一次带说明的存档，把当时的改动打包记进历史</button>
+      <button class="opt">把程序发布上线</button>
+      <div class="exp">解析：提交就是存档点。说明写清改了什么、为什么，以后翻历史才看得懂。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3. 本地仓库和远程仓库是什么关系？</div>
+      <button class="opt">两个毫不相干的项目</button>
+      <button class="opt">同一个仓库的两份副本，靠推送和拉取保持同步</button>
+      <button class="opt">远程是本地的只读照片，不能改</button>
+      <div class="exp">解析：本地在你电脑上、远程在 GitHub 上；push 送上去，pull 取回来。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">4.（情景）AI 说：「推送被拒了，远端已经有新的提交。」你应该让它怎么做？</div>
+      <button class="opt">先拉取，把远端的新提交取回来，再推送</button>
+      <button class="opt">强制覆盖远端，反正自己的最重要</button>
+      <button class="opt">把远端仓库删掉重新建一个</button>
+      <div class="exp">解析：被拒是 Git 在防互相覆盖。先 pull 再 push，新改动两边都不丢。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">5. AI 把功能改坏了，想回到昨天那个好用的版本，靠的是什么？</div>
+      <button class="opt">凭记忆把代码手改回去</button>
+      <button class="opt">重装一遍开发工具</button>
+      <button class="opt">历史记录里找到昨天的提交，用 reset 或 revert 退回去</button>
+      <div class="exp">解析：每个版本都在历史里。reset 是读档重来，revert 是补一次「反悔存档」，都能回到好用的状态。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-14.html">← 上一节：第 14 节 部署</a>
+    <a href="lesson-16.html">下一节：第 16 节 GitHub：分支与协作 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '15';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  var LG = String(parseInt(NO, 10)); if (LG !== NO) { if (st.done[LG]) st.done[NO] = true; if (st.quiz[LG]) st.quiz[NO] = st.quiz[LG]; }
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
