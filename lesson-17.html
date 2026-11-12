@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 17 节 · 嵌入式与固件 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #1f4e78; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 5 当代码遇到硬件</div>
+  <div class="mod">第 17 节</div>
+  <h1>嵌入式与固件</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n">1</span> 一句话结论</div>
+    <div class="big">固件是刷进芯片里的程序，专管设备的一件事。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：家电里的小控制板</h2>
+    <p class="ana">洗衣机、微波炉里都藏着一小块控制板：没有屏幕、没有花哨功能，就管进水、加热、计时这几件事，一通电就干活，十年八年不用改。手机 App 正相反：功能一大堆，天天喊你升级。前面章节讲的程序大多是「手机 App 型」，这一节讲的是「小控制板型」——回到你的老本行，设备里的程序。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 182" role="img" aria-label="上位机与下位机示意图">
+        <text x="180" y="26" text-anchor="middle" font-size="12.5" fill="#77808f">数据来往</text>
+        <rect x="8" y="36" width="138" height="110" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><rect x="52" y="56" width="50" height="38" rx="4"/><line x1="40" y1="65" x2="52" y2="65"/><line x1="40" y1="75" x2="52" y2="75"/><line x1="40" y1="85" x2="52" y2="85"/><line x1="102" y1="65" x2="114" y2="65"/><line x1="102" y1="75" x2="114" y2="75"/><line x1="102" y1="85" x2="114" y2="85"/></g>
+        <text x="77" y="122" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1f4e78">设备里的控制板</text>
+        <text x="77" y="140" text-anchor="middle" font-size="12.5" fill="#77808f">下位机 · 固件在这跑</text>
+        <text x="180" y="86" text-anchor="middle" font-size="15" fill="#b7c3d4">→</text>
+        <text x="180" y="110" text-anchor="middle" font-size="15" fill="#b7c3d4">←</text>
+        <rect x="214" y="36" width="138" height="110" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><rect x="263" y="52" width="40" height="58" rx="6"/><line x1="275" y1="100" x2="291" y2="100"/></g>
+        <text x="283" y="122" text-anchor="middle" font-size="13.5" font-weight="700" fill="#146c3c">你的手机</text>
+        <text x="283" y="140" text-anchor="middle" font-size="12.5" fill="#77808f">上位机 · 给人操作</text>
+        <text x="180" y="170" text-anchor="middle" font-size="12.5" fill="#77808f">一套完整工具 = 上位机出界面 + 下位机干实活</text>
+      </svg>
+      <div class="cap">图：藏在设备里的那一半，和摆在你手里的那一半</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>嵌入式：藏在设备里的小电脑。</b>嵌入式（embedded）是藏在设备内部、专管一件事的计算机：没有屏幕键盘，一通电就默默干活——盯传感器、控电机、收发报文。洗衣机、智能手表、车上每个控制器里都藏着一颗。</p>
+    <div class="chips">
+      <div class="chip3"><b>藏起来</b><span>在设备内部</span></div>
+      <div class="chip3"><b>专管一件事</b><span>不贪多</span></div>
+      <div class="chip3"><b>通电就干活</b><span>不用人伺候</span></div>
+    </div>
+    <p><b>固件：刷进芯片、不轻易改的程序。</b>固件（firmware）存在芯片里，断电不丢，平时不动它，改一次要重新刷一遍。它住的地方内存小得可怜，所以爱用 C：C 编出的程序最精瘦，还能直接摸硬件，快又稳。</p>
+    <p><b>单片机的程序，脾气和电脑程序不一样。</b>单片机（microcontroller，简称 MCU）是把处理器、内存、接口挤在一颗芯片里的小电脑。拿它和你天天用的电脑程序比一比，差别一目了然：</p>
+    <table class="cmp">
+      <tr><th style="width:24%"></th><th>单片机程序</th><th>电脑 / 手机程序</th></tr>
+      <tr><td><b>内存</b></td><td>几十到几百 KB</td><td>几个 GB 起步</td></tr>
+      <tr><td><b>界面</b></td><td>没有屏幕，直接对引脚和信号</td><td>屏幕、键盘、触摸样样全</td></tr>
+      <tr><td><b>出错后果</b></td><td>可能直接控制失灵</td><td>多数时候重启就好</td></tr>
+    </table>
+    <p><b>烧录、串口，和上下两半。</b>把程序灌进芯片叫烧录（flashing）；串口（serial port）是最朴素的一根线通道，调试时看设备「说话」全靠它。给人操作的那半叫上位机，在设备里跑的那半叫下位机，两半配合才是一套完整工具。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>你在上位机上点一下（比如读故障码）</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>命令顺着线发给设备里的下位机</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>下位机对着硬件把活干了，把结果送回来</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：CAN 记录仪</h2>
+    <p>你的 CAN 记录仪，就是一套现成的「上位机＋下位机」，不用往远处找例子：</p>
+    <p><b>盒子里是下位机。</b>一颗 STM32 芯片，跑着 C 语言写的 vdlink 固件。它的活儿只有一件：盯着 CAN 总线，收报文、发报文，不显山不露水。</p>
+    <p><b>手机上是上位机。</b>canlink 网页负责显示、诊断、刷写这些跟人打交道的事。它自己不碰总线，所有动作都是指挥盒子去完成。</p>
+    <p><b>升级固件也不用装软件。</b>给盒子换新固件，走网页里的 DFU（Device Firmware Upgrade，设备固件升级）通道，浏览器直接把新固件刷进盒子。第 14 节说的「部署」，到了硬件这边就是烧录。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「先分清：这次改的是固件还是上位机？两半分别动了什么。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「动固件之前先告诉我：刷坏了怎么救、能不能回到旧版本。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「用大白话讲一遍：盒子上电之后，固件按什么顺序干活。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「盒子不太对劲，你把软硬件全面升级一下吧。」——哪一半、什么毛病、刷坏了怎么办，全没说，出事就是变砖。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>嵌入式</b><span>Embedded</span><span class="tap">点我看解释</span></div>
+        <div class="face back">藏在设备内部、专管一件事的小计算机，没有屏幕，一通电就干活。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>固件</b><span>Firmware</span><span class="tap">点我看解释</span></div>
+        <div class="face back">刷进芯片里的程序，断电不丢；平时不动它，改一次要重新烧录。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>单片机</b><span>MCU</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把处理器、内存、接口挤在一颗芯片里的小电脑，英文 Microcontroller，简称 MCU。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>烧录</b><span>Flashing</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把编译好的程序灌进芯片的动作，灌完上电，就照新程序运行。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>上位机</b><span>Host</span><span class="tap">点我看解释</span></div>
+        <div class="face back">给人操作的那一半程序，跑在电脑或手机上；藏在设备里干活的那一半叫下位机。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 「固件」最准确的说法是？</div>
+      <button class="opt">一块做得特别结实的电路板</button>
+      <button class="opt">刷进芯片里、断电也不丢的那套程序</button>
+      <button class="opt">设备出厂时贴的参数标签</button>
+      <div class="exp">解析：固件是程序，不是硬件：它住在芯片里，断电不丢，改它要重新烧录。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">2. 嵌入式为什么爱用 C 语言？</div>
+      <button class="opt">芯片资源小，C 编出的程序精瘦、又能直接管硬件</button>
+      <button class="opt">C 语言做出来的界面特别好看</button>
+      <button class="opt">因为别的语言都被明令禁用了</button>
+      <div class="exp">解析：单片机的内存和算力都紧巴，C 胜在小而快、离硬件近；界面好看从来不是它的长项。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3.（情景）AI 回复：「固件和上位机页面我一起改好了，插上盒子试试。」你先确认什么最稳妥？</div>
+      <button class="opt">新页面的颜色和旧的搭不搭</button>
+      <button class="opt">先别急着插——固件刷坏了，有没有办法刷回旧版</button>
+      <button class="opt">改动的文件是不是都提交了</button>
+      <div class="exp">解析：上位机改坏了刷新就行，固件刷坏可能直接变砖。动固件之前，先把退路落实。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">4. 「上位机」指的是哪一半？</div>
+      <button class="opt">芯片里跑的那一半</button>
+      <button class="opt">电压比较高的那一半</button>
+      <button class="opt">在电脑或手机上、给人看给人操作的那一半</button>
+      <div class="exp">解析：上位机对人，下位机对硬件：canlink 网页是上位机，盒子里的 vdlink 固件是下位机。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">5. 给单片机「烧录」程序，意思是？</div>
+      <button class="opt">把编译好的程序灌进芯片里</button>
+      <button class="opt">把芯片加热做老化测试</button>
+      <button class="opt">把旧程序删干净、不留任何备份</button>
+      <div class="exp">解析：烧录就是写入：新程序进了芯片，设备一上电就照新程序干活。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-16.html">← 上一节：第 16 节</a>
+    <a href="lesson-18.html">下一节：第 18 节 数据处理脚本 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '17';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  var LG = String(parseInt(NO, 10)); if (LG !== NO) { if (st.done[LG]) st.done[NO] = true; if (st.quiz[LG]) st.quiz[NO] = st.quiz[LG]; }
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
