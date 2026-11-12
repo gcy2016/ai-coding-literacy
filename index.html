@@ -72,10 +72,10 @@
     html += '<div class="mod-t">' + m.t + '</div><p class="mod-d">' + m.d + '</p>';
     m.items.forEach(function (it) {
       total++;
-      var no = it[0], title = it[1], isDone = !!done[no];
+      var no = it[0], title = it[1], isDone = !!(done[no] || done[String(parseInt(no, 10))]);
       if (isDone) doneN++;
       if (LIVE[no]) {
-        html += '<a class="row ' + (isDone ? 'done' : 'live') + '" href="lesson-' + no + '.html"><div class="no">' + no + '</div><div class="tt">' + title + (no === '09' ? '（样板节）' : '') + '</div><div class="st">' + (isDone ? '已打卡 ✓' : '开始学 →') + '</div></a>';
+        html += '<a class="row ' + (isDone ? 'done' : 'live') + '" href="lesson-' + no + '.html"><div class="no">' + no + '</div><div class="tt">' + title + (no === '09' ? '（样板节）' : '') + '</div><div class="st">' + (isDone ? '已学完 ✓' : '开始学 →') + '</div></a>';
       } else {
         html += '<div class="row idle"><div class="no">' + no + '</div><div class="tt">' + title + '</div><div class="st">待制作</div></div>';
       }
