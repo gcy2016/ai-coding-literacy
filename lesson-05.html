@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 05 节 · 数据：变量、类型、列表、字典、JSON | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+  .codecard { background: #0f2233; border-radius: 12px; padding: 12px 8px; margin: 12px 0 8px; overflow-x: auto; }
+  .cl { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.9; color: #d6e4f0; white-space: pre; padding: 1px 8px; border-radius: 6px; cursor: pointer; }
+  .cl.on { background: #2e75b6; color: #fff; }
+  .codeexp { background: #f6f9fc; border: 1px solid #dfe6ef; border-radius: 8px; padding: 10px 12px; font-size: 14.5px; color: #40506b; min-height: 52px; line-height: 1.65; }
+  .codeexp b { color: #1f4e78; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 2 看懂代码的骨架</div>
+  <div class="mod">第 05 节</div>
+  <h1>数据：变量、类型、列表、字典、JSON</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">数据先装进带标签的盒子，程序才找得到、用得对。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：仓库里的盒子</h2>
+    <p class="ana">程序打交道的东西全是数据：车速、温度、一条报文、一张照片的信息。数据不会摊在地上，都装在「盒子」里：单个盒子贴上标签，叫变量；一排盒子排好队，叫列表；按名字查的格子柜，像通讯录，叫字典。这一节就认识这几种装法。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 172" role="img" aria-label="变量、列表、字典示意图">
+        <rect x="6" y="30" width="108" height="118" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><rect x="32" y="62" width="56" height="40"/><line x1="32" y1="74" x2="88" y2="74"/></g>
+        <rect x="44" y="44" width="34" height="14" rx="3" fill="#fff" stroke="#2e75b6"/>
+        <text x="61" y="55" text-anchor="middle" font-size="12.5" fill="#1f4e78">车速</text>
+        <text x="60" y="126" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">变量</text>
+        <text x="60" y="143" text-anchor="middle" font-size="12.5" fill="#77808f">盒子里的值：88</text>
+        <rect x="126" y="30" width="108" height="118" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><rect x="136" y="62" width="24" height="30"/><rect x="168" y="62" width="24" height="30"/><rect x="200" y="62" width="24" height="30"/></g>
+        <text x="148" y="108" text-anchor="middle" font-size="12.5" fill="#8a5a12">0</text>
+        <text x="180" y="108" text-anchor="middle" font-size="12.5" fill="#8a5a12">1</text>
+        <text x="212" y="108" text-anchor="middle" font-size="12.5" fill="#8a5a12">2</text>
+        <text x="180" y="126" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">列表</text>
+        <text x="180" y="143" text-anchor="middle" font-size="12.5" fill="#77808f">按序号取</text>
+        <rect x="246" y="30" width="108" height="118" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><line x1="258" y1="76" x2="342" y2="76"/><line x1="258" y1="94" x2="342" y2="94"/></g>
+        <text x="262" y="70" font-size="12.5" fill="#40506b">城市 → 重庆</text>
+        <text x="262" y="88" font-size="12.5" fill="#40506b">日期 → 11-12</text>
+        <text x="262" y="106" font-size="12.5" fill="#40506b">照片 → 36 张</text>
+        <text x="300" y="126" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">字典</text>
+        <text x="300" y="143" text-anchor="middle" font-size="12.5" fill="#77808f">按名字查</text>
+        <text x="180" y="166" text-anchor="middle" font-size="12.5" fill="#77808f">三种装法，程序里的数据基本都这么放</text>
+      </svg>
+      <div class="cap">图：变量是盒子，列表是一排盒子，字典是通讯录</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>变量：贴标签的盒子。</b>写 speed = 88，就是造一个叫 speed 的盒子、把 88 放进去。后面再说 speed，指的就是盒子里现在的值；值随时能换，换成 90，盒子还是那个盒子。</p>
+    <div class="chips">
+      <div class="chip3"><b>名字</b><span>标签，找它靠这个</span></div>
+      <div class="chip3"><b>值</b><span>盒子里装的东西</span></div>
+      <div class="chip3"><b>可换</b><span>随时能重新赋值</span></div>
+    </div>
+    <p><b>类型：盒子里的东西分种类。</b>类型（type）常见的有整数、小数、文字（字符串，string）、真假（布尔，boolean）。类型用错，轻则算错、重则报错——就像拿温度计去称体重，工具不对，读数没意义。</p>
+    <table class="cmp">
+      <tr><th style="width:26%">类型</th><th>例子</th><th>像什么</th></tr>
+      <tr><td>整数 / 小数</td><td>88、36.5</td><td>计数、仪表读数</td></tr>
+      <tr><td>字符串</td><td>"重庆"</td><td>一段文字</td></tr>
+      <tr><td>布尔</td><td>真 / 假</td><td>开关，只有两档</td></tr>
+    </table>
+    <p><b>列表和字典：成批装数据。</b>一堆同类的东西排成一排是列表（list），按序号取，像排队叫号；一组「名字 → 值」的配对是字典（dictionary），按名字直接查，像通讯录按人名查电话。</p>
+    <table class="mini-table">
+      <tr><th>名字（键）</th><th>值</th></tr>
+      <tr><td>"city"</td><td>"重庆"</td></tr>
+      <tr><td>"photos"</td><td>36</td></tr>
+    </table>
+    <p><b>JSON：把字典和列表写成文本。</b>JSON（JavaScript Object Notation，一种到处都在用的数据写法）长相就是花括号配冒号。它既能存进文件，也能在程序之间传递，人和机器都读得懂，所以到处都是它。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：标记帧和相册数据</h2>
+    <p><b>CANLink 的标记帧。</b>你在 CANLink 里点「标记」时，它会往记录里插一帧特殊报文：ID 是 1FFFFFF0；8 个字节里，第 1–2 字节是标记序号，第 3 字节固定放 165（十六进制 0xA5）当暗号，第 5–8 字节是打下标记的时刻。这一帧写成 JSON 大致长这样：{"id": "1FFFFFF0", "data": [1, 0, 165, 0, ...]}——一个字典，键是 id 和 data，data 的值是一个列表。</p>
+    <p><b>相册的 album.json。</b>相册里一条区域记录也是一个字典，包含区域编号、点亮日期、照片等信息；全部区域的记录汇在一起，整体存在一个叫 album.json 的文件里。文件名后缀 .json 的意思就是：这个文件里装的是 JSON 格式的数据，相册每次打开，先把这个文件读进来变成字典和列表再干活。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这个数据准备用什么结构存？是列表还是字典？先给我看一条真实样例。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「这个字段是什么类型？会不会出现空值，或者数字和文字混着来？」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「数据随便存一下，能跑就行。」——结构没定好，后面解析、统计、改版全跟着返工。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>变量</b><span>Variable</span><span class="tap">点我看解释</span></div>
+        <div class="face back">给数据起的名字，像贴了标签的盒子，喊名字就能找到里面的值。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>类型</b><span>Type</span><span class="tap">点我看解释</span></div>
+        <div class="face back">数据的种类：整数、小数、文字、真假。类型用错，运算会出错或直接报错。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>列表</b><span>List</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一排有序的盒子，用序号取里面的东西，序号从 0 开始数。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>字典</b><span>Dictionary</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一组「名字 → 值」的配对，用名字直接查值，像通讯录按人名查号码。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>JSON</b><span>JavaScript Object Notation</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把字典和列表写成纯文本的通用格式，存文件、传数据都用它。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 代码里先写 count = 0，后来又写 count = 5。现在 count 里装的是几？</div>
+      <button class="opt">还是 0，变量定了就不能改</button>
+      <button class="opt">5，最后一次放进去的值</button>
+      <button class="opt">会报错，一个变量只能赋值一次</button>
+      <div class="exp">解析：变量就是盒子，值随时能换，后放的盖掉先放的，所以现在是 5。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">2. 下面哪种数据最适合用字典来装？</div>
+      <button class="opt">一个人的姓名、所在城市、电话</button>
+      <button class="opt">一排照片的文件名</button>
+      <button class="opt">一串连续的温度读数</button>
+      <div class="exp">解析：有名字、分项查的用字典；成排的同类数据用列表。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3. JSON 里写 {"city": "重庆", "photos": 36}，它表示什么？</div>
+      <button class="opt">一条让程序执行的命令</button>
+      <button class="opt">一个字典：城市是重庆，照片数是 36</button>
+      <button class="opt">一张表格的截图</button>
+      <div class="exp">解析：花括号是字典，冒号左边是名字（键），右边是值；文字带引号，数字不带。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">4.（情景）AI 说：「接口返回的 JSON 里，这个字段有时是数字、有时是字符串，我先兼容处理了。」你最该留意什么？</div>
+      <button class="opt">没事，能跑通就行，不用管</button>
+      <button class="opt">让它把这个字段里的数字全部删掉</button>
+      <button class="opt">类型不稳定是数据源头的问题，要问清为什么会变、能不能在源头统一</button>
+      <div class="exp">解析：同一个字段类型忽数忽字，迟早在别的地方爆雷；兼容只是临时兜底，源头统一才干净。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">5. 相册的 album.json 如果格式损坏、打不开了，最可能的影响是？</div>
+      <button class="opt">只是页面图标不好看</button>
+      <button class="opt">手机运行会变慢</button>
+      <button class="opt">相册读不到区域和照片记录，等于数据本体丢了</button>
+      <div class="exp">解析：album.json 就是相册的数据本体，文件坏了记录就读不出来——重要数据文件一定要有备份。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">8</span>读代码：一条标记帧是怎么装的</h2>
+    <p>下面这段 Python（一种编程语言，本模块统一用它举例）是教学示例：先用一个字典表示一条标记帧，再把多帧装进一个列表。<b>点任意一行，看这一行在干什么。</b></p>
+    <div class="codecard">
+      <div class="cl" data-ln="1" data-e="开始定义一个字典，起名叫 marker，也就是一帧标记报文。">marker = {</div>
+      <div class="cl" data-ln="2" data-e="字典的第一个键值对：键是 id，值是这帧的编号 1FFFFFF0；值是文字，所以要带引号。">    "id": "1FFFFFF0",</div>
+      <div class="cl" data-ln="3" data-e="第二个键值对：data 的值是一个列表，装着 8 个字节；前两个数合起来是标记序号 1，第 3 个 165 是暗号。">    "data": [1, 0, 165, 0, 12, 34, 0, 0],</div>
+      <div class="cl" data-ln="4" data-e="右花括号：这个字典到这里结束。">}</div>
+      <div class="cl" data-ln="5" data-e="新建一个空列表，起名 frames，准备往里装很多帧报文。">frames = []</div>
+      <div class="cl" data-ln="6" data-e="把刚才那帧标记报文放进列表，它排在第 0 位。">frames.append(marker)</div>
+      <div class="cl" data-ln="7" data-e="再放进一帧普通报文，排在第 1 位；这一行里直接现写了一个小字典。">frames.append({"id": "0CFF1234", "data": [88, 10]})</div>
+      <div class="cl" data-ln="8" data-e="打印列表里一共有几帧，结果是 2。">print(len(frames))</div>
+      <div class="cl" data-ln="9" data-e="取出第 0 帧的 data 列表里第 2 个数（序号从 0 开始数），正是暗号 165，用来验明这是一帧标记。">print(frames[0]["data"][2])</div>
+    </div>
+    <div class="codeexp" id="codeExp">点任意一行，这里会显示这一行的中文解释。</div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-04.html">← 上一节：第 04 节</a>
+    <a href="lesson-06.html">下一节：第 06 节 逻辑 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '5';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+  document.querySelectorAll('.cl').forEach(function (el) {
+    el.onclick = function () {
+      document.querySelectorAll('.cl').forEach(function (x) { x.classList.remove('on'); });
+      el.classList.add('on');
+      document.getElementById('codeExp').innerHTML = '<b>第 ' + el.dataset.ln + ' 行：</b>' + el.dataset.e;
+    };
+  });
+</script>
+</body>
+</html>
