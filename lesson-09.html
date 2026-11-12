@@ -236,6 +236,7 @@
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
   var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  if (st.done['9']) st.done['09'] = true; if (st.quiz['9']) st.quiz['09'] = st.quiz['9'];
   document.querySelectorAll('.q').forEach(function (q, qi) {
     var ans = +q.dataset.a, exp = q.querySelector('.exp');
     q.querySelectorAll('.opt').forEach(function (b, bi) {
@@ -245,10 +246,10 @@
           x.classList.toggle('no', xi === bi && bi !== ans);
         });
         exp.classList.add('show');
-        st.quiz['9'] = st.quiz['9'] || [];
-        st.quiz['9'][qi] = (bi === ans); save(st);
+        st.quiz['09'] = st.quiz['09'] || [];
+        st.quiz['09'][qi] = (bi === ans); save(st);
       };
-      var prev = (st.quiz['9'] || [])[qi];
+      var prev = (st.quiz['09'] || [])[qi];
       if (prev !== undefined) {
         if (bi === ans) b.classList.add('ok');
         if (prev === false && bi !== ans) { /* 不还原当初的错选，只标对的 */ }
@@ -258,9 +259,9 @@
   });
   var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
   function paintDone() {
-    if (st.done['9']) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+    if (st.done['09']) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
   }
-  btn.onclick = function () { st.done['9'] = true; save(st); paintDone(); };
+  btn.onclick = function () { st.done['09'] = true; save(st); paintDone(); };
   paintDone();
 </script>
 </body>
