@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 20 节 · 怎么提需求 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 6 和 AI 协作编程</div>
+  <div class="mod">第 20 节</div>
+  <h1>怎么提需求</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">需求说得越具体，AI 猜得越少。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：给施工队的任务单</h2>
+    <p class="ana">装修时你不会只对工长说一句「把房子装一下」。你会给一张任务单：为什么装、装成什么样、哪几间装哪几间不碰、最后拿什么标准验收。给 AI 派活是同一回事——任务单写得越细，返工越少。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 232" role="img" aria-label="任务单示意图">
+        <rect x="92" y="16" width="176" height="202" rx="10" fill="#f6f9fc" stroke="#2e75b6" stroke-width="1.5"/>
+        <rect x="140" y="6" width="80" height="20" rx="9" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <text x="180" y="52" text-anchor="middle" font-size="15" font-weight="700" fill="#1f4e78">任 务 单</text>
+        <g stroke="#77808f" stroke-width="1.6" fill="none"><rect x="112" y="68" width="15" height="15" rx="3"/></g>
+        <text x="138" y="81" font-size="13.5" font-weight="700" fill="#40506b">背景</text>
+        <text x="182" y="81" font-size="12.5" fill="#77808f">——为什么做</text>
+        <g stroke="#77808f" stroke-width="1.6" fill="none"><rect x="112" y="102" width="15" height="15" rx="3"/></g>
+        <text x="138" y="115" font-size="13.5" font-weight="700" fill="#40506b">目标</text>
+        <text x="182" y="115" font-size="12.5" fill="#77808f">——做成什么样</text>
+        <g stroke="#77808f" stroke-width="1.6" fill="none"><rect x="112" y="136" width="15" height="15" rx="3"/></g>
+        <text x="138" y="149" font-size="13.5" font-weight="700" fill="#40506b">范围</text>
+        <text x="182" y="149" font-size="12.5" fill="#77808f">——做什么、不做什么</text>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><rect x="112" y="170" width="15" height="15" rx="3"/><path d="M115 178 l4 4 l6 -8"/></g>
+        <text x="138" y="183" font-size="13.5" font-weight="700" fill="#40506b">验收</text>
+        <text x="182" y="183" font-size="12.5" fill="#77808f">——怎么算完成</text>
+        <line x1="112" y1="202" x2="248" y2="202" stroke="#dfe6ef"/>
+      </svg>
+      <div class="cap">图：一张任务单的四个格子，缺一格 AI 就要猜一格</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>好需求，先把四个问题答齐。</b>为什么做（背景）、做成什么样（目标）、做到哪为止（范围）、怎么算做完（验收标准）。四样齐了，AI 基本不用猜；缺一样，它就得自己脑补，返工多半出在脑补的那部分。</p>
+    <table class="cmp">
+      <tr><th style="width:24%">要素</th><th>它回答的问题</th></tr>
+      <tr><td><b>背景</b></td><td>为什么要做这件事</td></tr>
+      <tr><td><b>目标</b></td><td>做成什么样算对</td></tr>
+      <tr><td><b>范围</b></td><td>做什么、不做什么</td></tr>
+      <tr><td><b>验收标准</b></td><td>拿什么检查它做完了</td></tr>
+    </table>
+    <p><b>范围最容易漏的是「不做什么」。</b>只说「给相册加个搜索」，它可能顺手把界面也重做了；补一句「只加搜索框，别动现有布局和数据」，它的手就收住了。边界划清，比目标写得漂亮更省返工。</p>
+    <table class="cmp">
+      <tr><th style="width:38%">说法</th><th>结果</th></tr>
+      <tr><td>只说做什么</td><td>剩下的空间它自由发挥</td></tr>
+      <tr><td>做与不做都说清</td><td>它只在你划的圈里干活</td></tr>
+    </table>
+    <p><b>大任务要拆开，一批一批交。</b>一口气交代二十条，做到一半全乱套的概率很高。拆成能单独验收的小批：先做一批、你验一批、过了再下一批——做歪也只歪一批，不会全部推倒重来。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>把大任务拆成小批</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>先做第一批（或先做样板）</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>你验收，确认风格和方向</div><div class="farr">↓</div>
+      <div class="fstep"><i>4</i>过了，再继续下一批</div>
+    </div>
+    <p><b>交代时顺手给足上下文。</b>上下文（context，你交代给 AI 的背景信息）最值钱的是三样：现状——已有的代码、数据长什么样；限制——不能动什么这类硬规矩；例子——「照着这个的样子做」。给得越足，它越像熟人干活。</p>
+    <div class="chips">
+      <div class="chip3"><b>现状</b><span>已有的东西</span></div>
+      <div class="chip3"><b>限制</b><span>不能碰的规矩</span></div>
+      <div class="chip3"><b>例子</b><span>照着这个做</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：你写过一份范本</h2>
+    <p>这门课的大纲本身，就是一份写得很好的需求。它把给谁看、每节的固定结构、做完拿什么清单自检、连「先做一节样板、验过风格再按模块批量」都写死了——这份写清背景、结构、验收和分批方式的文档，就是 PRD（Product Requirements Document，产品需求文档）。制作方照着做就行，几乎不用回头猜。</p>
+    <p>小需求也一样。今天给刷写包站加弹窗，你把弹窗上那句话一字不差地给了出来，还定了一条「固定网址不变」：文案不用它现编、边界不用它猜测，活一次就做对了。需求的颗粒度，就是返工的反义词。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「背景是……，目标是……。只改……，不要动……。做完的标准是……。你先讲一遍打算怎么做，我确认了再动手。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「这个任务分三批做，先做第一批给我看，我验收过了再继续。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「照着这个现成的例子做，风格和结构都跟它一致。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「帮我把这个软件优化一下，越快越好。」——优化什么、到什么程度、什么不许动，全没说，它只能猜。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>需求</b><span>Requirement</span><span class="tap">点我看解释</span></div>
+        <div class="face back">对「要做成什么样」的说明：背景、目标、范围、验收，四样齐了才算说清。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>PRD</b><span>Product Requirements Document</span><span class="tap">点我看解释</span></div>
+        <div class="face back">产品需求文档：把为什么做、做什么、怎么验收写成一份双方都认的任务单。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>范围</b><span>Scope</span><span class="tap">点我看解释</span></div>
+        <div class="face back">这次活干到哪为止：做什么，更要写清不做什么。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>验收标准</b><span>Acceptance Criteria</span><span class="tap">点我看解释</span></div>
+        <div class="face back">事先约好的检查条件：满足哪几条，就算做完、可以交付。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>上下文</b><span>Context</span><span class="tap">点我看解释</span></div>
+        <div class="face back">交代给 AI 的背景信息：现状、限制、参考例子，给得越足它猜得越少。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="0">
+      <div class="qt">1. 一份好需求里，「验收标准」回答的是哪个问题？</div>
+      <button class="opt">怎么算做完</button>
+      <button class="opt">为什么要做</button>
+      <button class="opt">用什么技术做</button>
+      <div class="exp">解析：背景答「为什么」，目标答「做成什么样」，验收标准答「怎么算完成」——事先说好，交付时才有据可查。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2. 下面哪句把「范围」说得最清楚？</div>
+      <button class="opt">把页面弄得好看一点</button>
+      <button class="opt">只给列表页加搜索框，不动详情页和数据</button>
+      <button class="opt">功能越多越好，你看着加</button>
+      <div class="exp">解析：范围要同时圈定做什么和不做什么，后者最容易漏、也最省返工。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">3.（情景）你一口气交代了二十条要求，AI 做到一半全乱套了。下次更好的做法是？</div>
+      <button class="opt">换一个 AI 试试</button>
+      <button class="opt">把二十条再重复一遍，说慢点</button>
+      <button class="opt">拆成几批，先做第一批，验过再继续</button>
+      <div class="exp">解析：大任务分批交付、逐批验收，做歪也只歪一批，不会整体推倒重来。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4. 交代需求时，哪样上下文最能帮 AI 少猜？</div>
+      <button class="opt">把聊天字体调大一点</button>
+      <button class="opt">给它看一个「照着这个样子做」的现成例子</button>
+      <button class="opt">反复强调「要认真做」</button>
+      <div class="exp">解析：现状、限制、例子是最值钱的上下文，其中例子最直观——照着做比形容半天更准。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5. PRD 的作用，最接近下面哪个？</div>
+      <button class="opt">给电脑运行的程序</button>
+      <button class="opt">把需求写成一份双方都认的任务单</button>
+      <button class="opt">存放代码的仓库</button>
+      <div class="exp">解析：PRD 是产品需求文档，写清背景、目标、范围和验收，让制作方不用猜、验收方有据可依。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-19.html">← 上一节：第 19 节</a>
+    <a href="lesson-21.html">下一节：第 21 节 怎么验收，怎么保底 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '20';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  var LG = String(parseInt(NO, 10)); if (LG !== NO) { if (st.done[LG]) st.done[NO] = true; if (st.quiz[LG]) st.quiz[NO] = st.quiz[LG]; }
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
