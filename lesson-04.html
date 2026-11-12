@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 04 节 · 依赖与环境 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 1 程序是什么</div>
+  <div class="mod">第 04 节</div>
+  <h1>依赖与环境</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">程序跑不跑得起来，一半看它带的调料齐不齐。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：先备齐调料和厨具</h2>
+    <p class="ana">照着菜谱做菜，第一步不是开火，是备料：酱油、醋、淀粉，还有趁手的锅和铲。缺一样，要么跑腿去买，要么这道菜直接做不成。程序也一样：它要用到的现成代码、运行它的语言环境，都得先备齐。这些「别人备好的料」，就是这一节要讲的依赖。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 168" role="img" aria-label="调料与厨具示意图">
+        <rect x="10" y="34" width="104" height="104" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><rect x="44" y="50" width="36" height="34" rx="2"/><line x1="51" y1="60" x2="73" y2="60"/><line x1="51" y1="68" x2="73" y2="68"/><line x1="51" y1="76" x2="66" y2="76"/></g>
+        <text x="62" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">菜谱</text>
+        <text x="62" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">程序本体</text>
+        <rect x="128" y="34" width="104" height="104" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><path d="M164 84 v-12 h6 v-6 h6 v6 h6 v12 z"/><path d="M192 84 v-9 h5 v-5 h5 v5 h5 v9 z"/></g>
+        <text x="180" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">调料架</text>
+        <text x="180" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">库和包 · 现成的</text>
+        <rect x="246" y="34" width="104" height="104" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><rect x="270" y="78" width="56" height="8"/><rect x="278" y="60" width="18" height="18" rx="2"/><line x1="302" y1="64" x2="320" y2="52"/></g>
+        <text x="298" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">厨房</text>
+        <text x="298" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">环境 · 锅灶齐全</text>
+        <text x="121" y="90" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="239" y="90" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="180" y="160" text-anchor="middle" font-size="12.5" fill="#77808f">调料缺一样，菜做不成；依赖缺一样，程序跑不起来</text>
+      </svg>
+      <div class="cap">图：程序本体、依赖（库和包）、环境，三样缺一不可</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>库和包：别人备好的现成料。</b>很多功能不用从头写：别人写好、打包发布的现成代码，叫库（library），也叫包（package）。要用某个功能，把包装上、调用就行——像做菜用现成酱料，不必自己从黄豆开始酿。</p>
+    <div class="chips">
+      <div class="chip3"><b>从头写</b><span>自己酿酱油</span></div>
+      <div class="chip3"><b>用包</b><span>买现成酱料</span></div>
+    </div>
+    <p><b>包管理器：替你采购记账。</b>包成百上千，靠人肉找装不现实，于是有包管理器（package manager）：你报个名字，它替你下载、安装、记版本。Python 的叫 pip，JavaScript 的叫 npm。AI 说「装个包」，多半指它们。</p>
+    <table class="cmp">
+      <tr><th style="width:26%">工具</th><th>管哪种语言的包</th><th>干什么</th></tr>
+      <tr><td><b>pip</b></td><td>Python</td><td>找包、装包、卸包、查版本</td></tr>
+      <tr><td><b>npm</b></td><td>JavaScript</td><td>同上</td></tr>
+    </table>
+    <p><b>版本号：三个数，各有讲究。</b>每个包都有版本号（version），通常写成三个数：大版本.小版本.修订，比如 4.6.1。大版本变了，常常是用法大改；后两位变，多半是加功能、修小毛病。版本对不上，程序照样跑不起来。</p>
+    <div class="chips">
+      <div class="chip3"><b>4</b><span>大版本：用法可能大改</span></div>
+      <div class="chip3"><b>6</b><span>小版本：多半是加功能</span></div>
+      <div class="chip3"><b>1</b><span>修订：修小毛病</span></div>
+    </div>
+    <p><b>环境和虚拟环境。</b>语言本体加上装好的所有包，合起来叫环境（environment）。「在我电脑上能跑」的真相多半在此：他有某个包、某个版本，你没有。解法是虚拟环境（virtual environment）——给每个项目隔一个小单间，各装各的。</p>
+    <table class="cmp">
+      <tr><th style="width:50%">全装在一起</th><th>每个项目一个虚拟环境</th></tr>
+      <tr><td>版本打架时，谁也跑不起来</td><td>各装各的，互不干扰</td></tr>
+      <tr><td>换台电脑，说不清当初装过啥</td><td>照着清单就能配出一模一样的一套</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目</h2>
+    <p><b>CANLink 的自测：零依赖。</b>它那六套自测脚本，用 node 直接就能跑，不装任何外部库——没有调料要备，最省心，也最不容易出「环境不一样」的毛病。</p>
+    <p><b>Muse 干活的那台机器：包都装在一处。</b>Python 的库统一装在一个固定文件夹里，就是虚拟环境的思路：python-can 装的是 4.6.1，处理 PDF 的 pypdf 也在里面。版本号写在名字后面，4.6.1 就是大版本 4、小版本 6、修订 1，认准了不会今天一个样、明天一个样。</p>
+    <p><b>旅行相册：把调料随身带。</b>相册的网页本身零依赖；它要用的 COS 工具包不是临时现装的，而是把文件直接放进仓库的 vendor/ 目录，走到哪儿带到哪儿，不指望别人的厨房里正好有。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这个功能要用到哪些包？版本各是多少？先列一张清单给我。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「别随便升包的版本。要升，先说清为什么、会不会影响现在的功能。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「换一台电脑还能不能跑？把需要的环境写成一份说明留着。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「装不上就换个最新版试试呗。」——版本一动，可能把原来好好的功能一起带坏。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>包（库）</b><span>Package / Library</span><span class="tap">点我看解释</span></div>
+        <div class="face back">别人写好、打包发布的现成代码，装上就能调用，不用自己从头写。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>包管理器</b><span>Package Manager</span><span class="tap">点我看解释</span></div>
+        <div class="face back">替你找包、装包、记版本的工具：Python 用 pip，JavaScript 用 npm。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>版本号</b><span>Version</span><span class="tap">点我看解释</span></div>
+        <div class="face back">包的「批次号」，如 4.6.1：大版本、小版本、修订，三段各有含义。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>环境</b><span>Environment</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一台机器上语言本体加装好的所有包的总和，决定了程序跑不跑得起来。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>虚拟环境</b><span>Virtual Environment</span><span class="tap">点我看解释</span></div>
+        <div class="face back">给单个项目隔出的独立小环境，包只装在里面，不跟别的项目打架。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. AI 说「这个功能要装一个包」，它指的是？</div>
+      <button class="opt">给电脑装一个新软件</button>
+      <button class="opt">引入一份别人写好的现成代码来用</button>
+      <button class="opt">把代码打包发给你</button>
+      <div class="exp">解析：包是现成代码的打包发布，装它是为了调用里面的功能。它是程序的零件，不是应用软件。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">2. 版本号 4.6.1 里，哪一位变了最值得警惕？</div>
+      <button class="opt">最后一位：1</button>
+      <button class="opt">中间一位：6</button>
+      <button class="opt">第一位：4</button>
+      <div class="exp">解析：第一位是大版本。它变了往往意味着用法大改，升级之前必须先评估影响，别顺手就升。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3. pip 和 npm 的区别是？</div>
+      <button class="opt">一个收费、一个免费</button>
+      <button class="opt">分别管 Python 和 JavaScript 的包</button>
+      <button class="opt">一个装在电脑上、一个装在手机上</button>
+      <div class="exp">解析：两个都是包管理器，活儿一样，只是各管一种语言的包。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">4.（情景）AI 说「奇怪，我这边跑得好好的」，可你这边一运行就报错。最可能差在哪？</div>
+      <button class="opt">两边环境不一样：包缺了，或者版本对不上</button>
+      <button class="opt">两台电脑品牌不同</button>
+      <button class="opt">打开文件的时间不同</button>
+      <div class="exp">解析：「在我电脑上能跑」十有八九是环境差异。先对一对包和版本的清单，别急着改代码。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5.（情景）AI 建议：「把这个包升到最新版，应该就能修好。」稳妥的接法是？</div>
+      <button class="opt">升，越新肯定越好</button>
+      <button class="opt">先问升级会不会影响现有功能，升完让它把自测全跑一遍</button>
+      <button class="opt">干脆把所有包都一起升到最新</button>
+      <div class="exp">解析：升级就是换零件：先问影响面，升完再用自测确认没把别的功能带坏。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-03.html">← 上一节：第 03 节 终端：AI 为什么总在敲命令</a>
+    <a href="lesson-05.html">下一节：第 05 节 数据：变量、类型、列表、字典、JSON →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '4';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
