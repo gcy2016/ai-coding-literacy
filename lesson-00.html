@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 00 节 · 导读 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #1f4e78; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 0 开场</div>
+  <div class="mod">第 00 节 · 导读</div>
+  <h1>你不需要会写，但需要会看、会说、会验收</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n">1</span> 一句话结论</div>
+    <div class="big">这门课不教你写代码，教你指挥写代码的人。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：装修房子</h2>
+    <p class="ana">请施工队装修，你不用会砌墙、不用会铺水管。但有三件事只能你来：看得懂图纸，知道他打算把你家装成什么样；说得清要求，哪里要改、改成什么样；验得了收，完工时逐项检查，不合格就让他返工。这三件事做不好，手艺再好的施工队也能把房子装歪。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 168" role="img" aria-label="装修三件事示意图">
+        <rect x="10" y="34" width="104" height="104" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><rect x="42" y="52" width="40" height="30"/><line x1="42" y1="62" x2="82" y2="62"/><line x1="56" y1="52" x2="56" y2="82"/></g>
+        <text x="62" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">看图纸</text>
+        <text x="62" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">看懂 · 你的事</text>
+        <rect x="128" y="34" width="104" height="104" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><path d="M158 84 l14 -18 l14 18"/><line x1="164" y1="84" x2="164" y2="68"/><line x1="180" y1="84" x2="180" y2="68"/></g>
+        <text x="180" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">施工</text>
+        <text x="180" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">动手 · AI 的事</text>
+        <rect x="246" y="34" width="104" height="104" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><path d="M272 66 l7 8 l13 -15"/><line x1="266" y1="86" x2="298" y2="86"/><line x1="266" y1="96" x2="290" y2="96"/></g>
+        <text x="298" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">验收</text>
+        <text x="298" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">把关 · 你的事</text>
+        <text x="121" y="90" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="239" y="90" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="180" y="160" text-anchor="middle" font-size="12.5" fill="#77808f">和 AI 编程是同一套分工：你出脑子，它出手</text>
+      </svg>
+      <div class="cap">图：业主负责看懂和验收，施工队负责动手</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>这门课学三件事。</b>看懂：程序的结构、AI 嘴里的术语、报错在说什么；说清：把需求讲到 AI 不用猜；验收：判断结果对不对，不对能退回重来。这三样就是你在 AI 编程里负责的全部工作。</p>
+    <div class="chips">
+      <div class="chip3"><b>看懂</b><span>它在说什么</span></div>
+      <div class="chip3"><b>说清</b><span>你要什么</span></div>
+      <div class="chip3"><b>验收</b><span>它做对没有</span></div>
+    </div>
+    <p><b>不学的东西同样明确。</b>不写代码、不背语法、不装软件、不敲命令。需要动手的地方都由 AI 做，你只练判断。判断的标准就一条：学完一节，能用自己的话把这节讲给别人听。</p>
+    <table class="cmp">
+      <tr><th style="width:50%">要学的</th><th>不学的</th></tr>
+      <tr><td>概念和结构，能看懂大意</td><td>亲手写代码、背语法</td></tr>
+      <tr><td>术语，AI 说什么不懵</td><td>装环境、配工具</td></tr>
+      <tr><td>提需求、验收、回退</td><td>算法和数学推导</td></tr>
+    </table>
+    <p><b>怎么使用这套教程。</b>每节 10–15 分钟，按编号顺序学，不用赶。术语卡点开翻一翻，小测当场做、错了看解析；学完点打卡，进度记在这台设备的浏览器里。中间遇到看不懂的词，先往下看，后面章节会展开，实在卡住就把原话发给 AI 让它用生活例子解释。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：你的 AI 团队</h2>
+    <p>这套分工你已经在用了，看看你自己的 AI 团队：GPT 出 PRD（Product Requirements Document，产品需求文档，写清要做什么的一份文档），是「说清需求」；Claude 照着写代码，是「施工」；Muse 负责实际操作和交付前的检查；最后你本人验收拍板。这门课练的，就是你坐的这个位置。</p>
+    <p>课程里的例子主要用网页项目（旅行相册最完整），因为网页的分层最典型。你以后让 AI 做的桌面软件、脚本、固件，分法不一样但道理一样；进阶篇第一课 A01 有一整节「程序类型地图」，到时候再对号入座。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「先别动手，先用大白话讲一遍你打算怎么做、会动哪些地方。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「改完之后，顺便告诉我怎么验证它是对的，我照着验。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「刚才那个词是什么意思？用一个生活里的例子解释。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「你看着办吧。」——等于把判断也一起外包了，结果好坏全凭运气。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>程序</b><span>Program</span><span class="tap">点我看解释</span></div>
+        <div class="face back">让电脑照着做事的一整套指令和数据的总称，比如相册、刷写工具都是程序。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>代码</b><span>Code</span><span class="tap">点我看解释</span></div>
+        <div class="face back">用编程语言写成的文本，是程序的「图纸加说明书」，电脑照着它运行。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>需求</b><span>Requirement</span><span class="tap">点我看解释</span></div>
+        <div class="face back">对「要做成什么样」的说明：改哪里、要什么效果、怎么算完成。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>验收</b><span>Acceptance</span><span class="tap">点我看解释</span></div>
+        <div class="face back">照着事先说好的标准逐项检查成果，合格才算交付，不合格退回重做。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="0">
+      <div class="qt">1. 这门课学完，你最可能发生的变化是？</div>
+      <button class="opt">能听懂 AI 的汇报，当场判断它做得对不对</button>
+      <button class="opt">能默写几百行代码</button>
+      <button class="opt">以后不需要 AI 了，自己全能干</button>
+      <div class="exp">解析：这门课练的是看懂、说清、验收——判断力，而不是手写代码的手艺。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2.（情景）AI 说：「已经重构完成，全部测试通过。」你最该做的下一步是？</div>
+      <button class="opt">回一句「辛苦了」，这事就算完</button>
+      <button class="opt">让它说明改了什么，然后自己打开功能实际点一遍</button>
+      <button class="opt">让它再重构一次，改得越多越放心</button>
+      <div class="exp">解析：「测试通过」是它的一面之词；验收要落到你亲手点一遍真实功能，这是业主的活。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3. 学的过程中碰到一个完全看不懂的术语，最有效的第一步是？</div>
+      <button class="opt">整节跳过，反正不重要</button>
+      <button class="opt">把原话发给 AI，让它用生活例子解释这个词</button>
+      <button class="opt">去背一本编程词典</button>
+      <div class="exp">解析：术语是用来沟通的，当场让 AI 用类比讲清，比死记硬背有效得多。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="index.html">← 回目录</a>
+    <a href="lesson-01.html">下一节：第 01 节 代码是怎么跑起来的 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '0';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
