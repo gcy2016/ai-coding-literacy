@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 10 节 · 前端：HTML、CSS、JavaScript | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+  .ccard { background: #f6f9fc; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 8px 0; margin: 10px 0 8px; }
+  .cl { padding: 7px 12px; cursor: pointer; border-left: 3px solid transparent; }
+  .cl code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13.5px; white-space: pre-wrap; word-break: break-all; color: #24344d; }
+  .cl.on { background: #eef4fb; border-left-color: #2e75b6; }
+  .cnote { font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; line-height: 1.65; }
+  .demo-btns { display: flex; gap: 10px; margin: 12px 0 4px; }
+  .demo-btns span { flex: 1; text-align: center; padding: 10px 4px; font-size: 14.5px; }
+  .db-a { background: #2e75b6; color: #fff; border-radius: 999px; }
+  .db-b { background: #fff; color: #cf3f38; border: 2px solid #cf3f38; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 3 一个网页应用是怎么组成的</div>
+  <div class="mod">第 10 节</div>
+  <h1>前端：HTML、CSS、JavaScript</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">HTML 搭骨架，CSS 管样子，JavaScript 管动作。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：盖房子</h2>
+    <p class="ana">一个页面像一间房。先立骨架：梁柱墙体，决定有几个房间、门开在哪。再搞装修：墙面颜色、地板、家具，决定好不好看。最后装电器：灯能亮、空调能转，房子才「活」起来。前端三件套，干的正是这三摊事。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 172" role="img" aria-label="房子三部分示意图">
+        <path d="M24 34 L180 8 L336 34" stroke="#b7c3d4" stroke-width="2" fill="none"/>
+        <rect x="14" y="44" width="100" height="104" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><line x1="38" y1="62" x2="38" y2="92"/><line x1="90" y1="62" x2="90" y2="92"/><line x1="30" y1="62" x2="98" y2="62"/><line x1="30" y1="92" x2="98" y2="92"/></g>
+        <text x="64" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">骨架</text>
+        <text x="64" y="130" text-anchor="middle" font-size="13" fill="#40506b">HTML</text>
+        <text x="64" y="146" text-anchor="middle" font-size="12.5" fill="#77808f">管结构</text>
+        <rect x="130" y="44" width="100" height="104" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><rect x="158" y="58" width="26" height="16" rx="2"/><line x1="171" y1="74" x2="171" y2="82"/><line x1="163" y1="92" x2="179" y2="92"/><path d="M163 82 h16 v4 a8 5 0 0 1 -16 0 z"/></g>
+        <text x="180" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">装修</text>
+        <text x="180" y="130" text-anchor="middle" font-size="13" fill="#40506b">CSS</text>
+        <text x="180" y="146" text-anchor="middle" font-size="12.5" fill="#77808f">管样子</text>
+        <rect x="246" y="44" width="100" height="104" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><circle cx="296" cy="72" r="11"/><line x1="290" y1="90" x2="302" y2="90"/><line x1="291" y1="95" x2="301" y2="95"/><line x1="296" y1="52" x2="296" y2="56"/><line x1="282" y1="60" x2="285" y2="63"/><line x1="310" y1="60" x2="307" y2="63"/></g>
+        <text x="296" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">电器</text>
+        <text x="296" y="130" text-anchor="middle" font-size="13" fill="#40506b">JavaScript</text>
+        <text x="296" y="146" text-anchor="middle" font-size="12.5" fill="#77808f">管动作</text>
+      </svg>
+      <div class="cap">图：先有骨架，再装修，最后通电能动</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>HTML 管结构。</b>它决定页面上有什么：一级标题、一段话、一张图、一个按钮，各就各位。它只管内容和结构，不管好不好看，也不管点了会怎样。页面源代码里那些尖括号标签，写的就是它。</p>
+    <div class="chips">
+      <div class="chip3"><b>&lt;h1&gt;</b><span>一级标题</span></div>
+      <div class="chip3"><b>&lt;img&gt;</b><span>一张图片</span></div>
+      <div class="chip3"><b>&lt;button&gt;</b><span>一个按钮</span></div>
+    </div>
+    <p><b>CSS 管样子。</b>同一个按钮，HTML 只说「这是一个按钮」，CSS 说「它要是蓝的、圆角、字 16 号、离左边 10 像素」。改配色、调间距、挪位置，动的都是这层，功能一点不受影响。</p>
+    <div class="demo-btns"><span class="db-a">同一个按钮 · 打扮 A</span><span class="db-b">同一个按钮 · 打扮 B</span></div>
+    <p><b>JavaScript 管动作。</b>点了上传，它去读文件、发请求；数据回来，它把新照片画到页面上。关弹窗、验表单、算结果，凡是「动起来」的部分都是它干的。第 05、06 节学的变量、判断、循环，主要就写在它里面。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>你点下按钮</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>JavaScript 接住这次点击，去办事</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>办完把页面更新给你看</div>
+    </div>
+    <p><b>框架和开发者工具。</b>框架（framework）是现成的半成品套装，React、Vue 最有名：等于请了装修队加预制件，盖得快，但要按人家的规矩来。浏览器自带的开发者工具（DevTools）能看元素、看请求、看报错，是你自己验货的放大镜。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>管什么</th><th>改它时的效果</th></tr>
+      <tr><td><b>HTML</b></td><td>结构：有什么</td><td>多一个按钮、少一段话</td></tr>
+      <tr><td><b>CSS</b></td><td>样式：长什么样</td><td>换颜色、调大小、挪位置</td></tr>
+      <tr><td><b>JavaScript</b></td><td>行为：能干什么</td><td>点了有反应、数据会更新</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：旅行相册</h2>
+    <p><b>相册没有用任何框架。</b>仓库里只有几个工具包文件（处理照片的、连 COS 的），界面全是原生 JavaScript 一行一行写的。好处是简单直接，不用追着框架升级跑；代价是复杂交互得自己多写些代码。</p>
+    <p><b>旅行树就是三件套分工的现成例子。</b>树的颜色由 css/app.css 里一组颜色变量统一控制，想换配色改变量就行，这是 CSS 的活；树怎么画出来，写在 js/tree-view.js 里；每根树枝往哪长的几何计算，在 js/tree.js 里——后两件都是 JavaScript 的活，一个管「画」，一个管「算」。</p>
+    <p>以后 AI 说「这个简单，不用上框架」，你就知道它在省哪份事；说「得改样式变量」，你也知道它只动样子、不碰功能。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这个改动只改样式（CSS），还是要改逻辑（JavaScript）？先说清再动手。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「先别引框架，原生写法做，简单优先；真需要时再跟我说理由。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「按钮点了没反应，帮我查 JavaScript 那层，顺便说说开发者工具里报了什么错。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「页面不好看，你整体优化一下。」——没说哪不好看、要什么效果，AI 只能乱改，越改越乱。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>HTML</b><span>HyperText Markup Language</span><span class="tap">点我看解释</span></div>
+        <div class="face back">超文本标记语言，写页面结构的：页面上有什么、各就各位，归它管。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>CSS</b><span>Cascading Style Sheets</span><span class="tap">点我看解释</span></div>
+        <div class="face back">层叠样式表，管页面长什么样：颜色、字号、间距、排版。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>JavaScript</b><span>简称 JS</span><span class="tap">点我看解释</span></div>
+        <div class="face back">让页面动起来的语言，管交互和逻辑：点了会怎样、数据怎么更新。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>框架</b><span>Framework</span><span class="tap">点我看解释</span></div>
+        <div class="face back">现成的半成品套装，React、Vue 最有名。用它盖得快，但要按它的规矩写。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>开发者工具</b><span>DevTools</span><span class="tap">点我看解释</span></div>
+        <div class="face back">浏览器自带的检查面板，能看页面元素、发出的请求和报错，电脑上按 F12 打开。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="0">
+      <div class="qt">1. 想把页面上的按钮从蓝色改成绿色，该动哪一层？</div>
+      <button class="opt">CSS：颜色是样式</button>
+      <button class="opt">HTML：把按钮删了重写</button>
+      <button class="opt">JavaScript：重跑一遍逻辑</button>
+      <div class="exp">解析：颜色、字号、间距都是样式，归 CSS 管，功能不受影响。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2. 按钮在页面上看得见，点了却没反应，最该先怀疑哪一层？</div>
+      <button class="opt">HTML：按钮没写进页面</button>
+      <button class="opt">JavaScript：点击后的逻辑没跑起来</button>
+      <button class="opt">CSS：按钮颜色太浅</button>
+      <div class="exp">解析：按钮在、样子正常，问题在「点了会怎样」这层，也就是 JavaScript。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3. AI 说「我用 React 把这个页面重写了」，意思是？</div>
+      <button class="opt">给页面换了个配色</button>
+      <button class="opt">用框架 React 来搭这个页面</button>
+      <button class="opt">把照片都存到了云端</button>
+      <div class="exp">解析：React 是前端框架，说的是「怎么搭页面」，和配色、存数据都不是一回事。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4.（情景）AI 回复：「页面结构没问题，是样式文件里一个颜色变量写错了，我改 CSS 就行。」你该怎么接？</div>
+      <button class="opt">让它把三件套全部重写一遍才放心</button>
+      <button class="opt">同意，并叮嘱只改样式文件、别动逻辑</button>
+      <button class="opt">要求它换个框架重做</button>
+      <div class="exp">解析：问题定位在 CSS，就只动那一层。改动面越小，越不容易顺手改坏别的地方。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5. 想看「这个网页刚才发了哪些请求」，开发者工具里该看哪块？</div>
+      <button class="opt">元素（Elements）面板，看页面结构</button>
+      <button class="opt">网络（Network）面板，看请求列表</button>
+      <button class="opt">把浏览器字体调大一点</button>
+      <div class="exp">解析：Network 面板按时间列出每个请求和它的结果，下一节讲状态码时就靠它。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">8</span>读代码（点一行，看一行）</h2>
+    <p>这是相册 js/images.js 里的真代码，就一个判断：<b>「这个文件是不是图片？」</b>上传照片前，每份文件都要先过这一关。点任意一行，看它在说什么。</p>
+    <div class="ccard">
+      <div class="cl" data-note="定义一个函数，名字叫 isImage（is image，是不是图片），收进来一个文件，准备回答真或假。开头的 export 表示：这个函数要留给别的文件调用。"><code>export function isImage(file) {</code></div>
+      <div class="cl" data-note="第一关，看文件的「类型标记」：以 image/ 开头的就是图片；或者再问另一个函数 isHeic——是不是苹果手机的那种 HEIC 照片。|| 是「或者」，有一关过就算数。"><code>  return /^image\//i.test(file.type) || isHeic(file)</code></div>
+      <div class="cl" data-note="第二关，改看文件名后缀：.jpg、.png、.webp、.gif、.bmp 结尾的也算图片。两关都不过，函数就回答「不是」，这份文件不会被当照片收下。"><code>    || /\.(jpe?g|png|webp|gif|bmp)$/i.test(file.name || ''); }</code></div>
+    </div>
+    <div class="cnote" id="cnote">点上面任意一行，这里会显示这一行的意思。</div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-09.html">← 上一节：第 09 节 三件套</a>
+    <a href="lesson-11.html">下一节：第 11 节 网络基础 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '10';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+  document.querySelectorAll('.cl').forEach(function (l) {
+    l.onclick = function () {
+      document.querySelectorAll('.cl').forEach(function (x) { x.classList.remove('on'); });
+      l.classList.add('on');
+      document.getElementById('cnote').textContent = l.dataset.note;
+    };
+  });
+</script>
+</body>
+</html>
