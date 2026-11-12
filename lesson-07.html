@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 07 节 · 组织：模块、导入、类，以及读代码的方法 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+  .codecard { background: #0f2233; border-radius: 12px; padding: 12px 8px; margin: 12px 0 8px; overflow-x: auto; }
+  .cl { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.9; color: #d6e4f0; white-space: pre; padding: 1px 8px; border-radius: 6px; cursor: pointer; }
+  .cl.on { background: #2e75b6; color: #fff; }
+  .codeexp { background: #f6f9fc; border: 1px solid #dfe6ef; border-radius: 8px; padding: 10px 12px; font-size: 14.5px; color: #40506b; min-height: 52px; line-height: 1.65; }
+  .codeexp b { color: #1f4e78; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 2 看懂代码的骨架</div>
+  <div class="mod">第 07 节</div>
+  <h1>组织：模块、导入、类，以及读代码的方法</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">大程序拆成小文件分工，读代码先抓主干再抠细节。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：零件、总成与整车</h2>
+    <p class="ana">一辆车不是一整块铁，是几万个零件先装成发动机、变速箱这样的总成，总成再装成整车。程序也一样：小段代码先封成函数，函数按活分进不同文件（模块），文件之间互相调用，最后拼成一个能跑的程序。你看装配图不会盯着一颗螺丝看，读代码也一样，先看总成。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 172" role="img" aria-label="零件、总成、整车示意图">
+        <rect x="6" y="30" width="108" height="118" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><rect x="24" y="58" width="26" height="26"/><circle cx="76" cy="71" r="13"/><rect x="52" y="96" width="26" height="20"/></g>
+        <text x="60" y="128" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">零件</text>
+        <text x="60" y="144" text-anchor="middle" font-size="12.5" fill="#77808f">一个个函数</text>
+        <rect x="126" y="30" width="108" height="118" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><rect x="142" y="52" width="76" height="52" rx="6"/><rect x="152" y="64" width="22" height="22"/><circle cx="196" cy="75" r="11"/></g>
+        <text x="180" y="128" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">总成</text>
+        <text x="180" y="144" text-anchor="middle" font-size="12.5" fill="#77808f">一个个模块文件</text>
+        <rect x="246" y="30" width="108" height="118" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><path d="M262 92 l8 -14 q3 -5 10 -5 l30 0 q7 0 11 5 l8 14 l5 0 q4 0 4 5 l0 8 q0 4 -4 4 l-76 0 q-4 0 -4 -4 l0 -8 q0 -5 4 -5 z"/><circle cx="278" cy="110" r="7"/><circle cx="322" cy="110" r="7"/></g>
+        <text x="300" y="128" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">整车</text>
+        <text x="300" y="144" text-anchor="middle" font-size="12.5" fill="#77808f">能跑的程序</text>
+        <text x="120" y="94" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="240" y="94" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="180" y="166" text-anchor="middle" font-size="12.5" fill="#77808f">读代码的顺序，和看装配图一样：先总成，后零件</text>
+      </svg>
+      <div class="cap">图：函数是零件，模块是总成，程序是整车</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>模块：按活分文件。</b>程序一大，就按职责拆成多个文件，每个文件管一摊事，这叫模块（module）。好处很实际：改录制功能时不用碰刷写代码，AI 定位也快，不容易误伤别处。</p>
+    <p><b>导入：开工先领零件。</b>要用别的模块里的东西，先写一句 import（导入）把它请进来。代码开头那几行 import 就是这个文件的「领料单」：扫一眼，就知道它干活靠谁。</p>
+    <div class="chips">
+      <div class="chip3"><b>import</b><span>把模块请进来</span></div>
+      <div class="chip3"><b>领料单</b><span>写在文件开头</span></div>
+      <div class="chip3"><b>先看它</b><span>就知道依赖谁</span></div>
+    </div>
+    <p><b>类和对象：图纸和实物。</b>类（class）是图纸，规定这类东西长什么样、能做什么；对象（object）是照图纸造出的实物。比如「报文」是图纸，每一帧真实报文是一个对象，数据各不同，规矩都一样。理解到这层就够用了。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>类（图纸）</th><th>对象（实物）</th></tr>
+      <tr><td><b>是什么</b></td><td>定义和规矩，只有一份</td><td>照着造出的每一个</td></tr>
+      <tr><td><b>报文例子</b></td><td>「报文有 ID 和数据」</td><td>第 1 帧、第 2 帧……</td></tr>
+    </table>
+    <p><b>注释和读代码四步法。</b>注释（comment）是写给人看的说明，电脑执行时跳过它。读陌生代码按四步走：看名字猜职责，看输入输出，顺主干看流程，最后把抠不懂的段落发给 AI 逐句解释。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>看名字：文件和函数叫什么，猜它管什么</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>看输入输出：喂进去什么，吐出来什么</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>看主干：顺着主要流程走一遍，先不抠细节</div><div class="farr">↓</div>
+      <div class="fstep"><i>4</i>问 AI：把卡住的段落发给它逐句解释</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：CANLink 的分工</h2>
+    <p>你的 CANLink 就拆得很清楚，网页不是一个大文件，而是按活分成几个模块：app.js 管主界面，diag.js 管诊断，flash.js 管刷写，recorder.js 管录制，slcan.js 管和 CAN 盒子说话。</p>
+    <p>这正是「模块」的样子：哪个功能出毛病，先定位到对应文件，就是顺着总成找零件。下面读代码的那一小段，就来自 app.js——主界面里负责「把文件下载下来」的一个零件。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「先告诉我这个功能在哪个文件里，只改那个文件，其他文件不要动。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「把这段代码逐行用中文解释一遍：先讲它整体干什么，再讲每一行。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「把整个项目重构一下，整理干净点。」——重构动的是整体结构，范围最难控制，没有明确收益不要轻易开这个口。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>模块</b><span>Module</span><span class="tap">点我看解释</span></div>
+        <div class="face back">按职责拆分的一个代码文件，一个模块管一摊事，像整车里的一个总成。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>导入</b><span>Import</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把别的模块请进来用，写在代码开头，像开工前先领零件。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>类</b><span>Class</span><span class="tap">点我看解释</span></div>
+        <div class="face back">造东西的图纸，规定这类东西长什么样、能做什么，只有一份。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>对象</b><span>Object</span><span class="tap">点我看解释</span></div>
+        <div class="face back">照着类这张图纸造出来的具体实物，每一个的数据可以不同。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>注释</b><span>Comment</span><span class="tap">点我看解释</span></div>
+        <div class="face back">写给人看的说明文字，电脑执行时会跳过它，也不检查它对不对。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="2">
+      <div class="qt">1. 一个文件开头的几行 import，最能告诉你什么？</div>
+      <button class="opt">这个文件是谁写的</button>
+      <button class="opt">这个文件一共有多少行</button>
+      <button class="opt">这个文件干活要用到哪些别的模块</button>
+      <div class="exp">解析：import 是领料单，扫一眼就知道这个文件依赖谁、和谁配合。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2. 按「类是图纸、对象是实物」的说法，一帧具体的报文数据是？</div>
+      <button class="opt">类</button>
+      <button class="opt">对象</button>
+      <button class="opt">模块</button>
+      <div class="exp">解析：「报文长什么样」的定义是图纸（类），每一帧真实报文是照图纸造出的实物（对象）。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">3.（情景）AI 说要把 recorder.js 里的导出函数挪到一个新文件里。这件事的性质是？</div>
+      <button class="opt">动代码的组织结构，所有调用这个函数的地方都要跟着改对</button>
+      <button class="opt">只是改改文字排版，没什么影响</button>
+      <button class="opt">在动数据库里的数据</button>
+      <div class="exp">解析：挪函数是结构调整，引用它的地方一个都不能漏，验收时要逐个功能点一遍。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4. 拿到一段完全陌生的代码，第一步先看什么最有效？</div>
+      <button class="opt">从第一行逐字读到最后一行</button>
+      <button class="opt">先看文件和函数的名字，猜它负责什么</button>
+      <button class="opt">先把里面的注释全部删掉</button>
+      <div class="exp">解析：四步法的第一步是看名字抓职责，先有全局，再抠细节。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">5. 代码的注释写错了、和实际代码对不上，会怎么样？</div>
+      <button class="opt">程序会直接报错跑不起来</button>
+      <button class="opt">电脑会自动把注释修正过来</button>
+      <button class="opt">程序照常运行，但看注释的人会被带偏</button>
+      <div class="exp">解析：注释电脑不执行、也不校验；过时的注释比没有注释更坑人。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">8</span>读代码：CANLink 里真实的一段</h2>
+    <p>下面这段 JavaScript（网页用的编程语言）原样摘自 CANLink 的 app.js，一行没改：你在 CANLink 里点「导出」下载文件时，跑的就是它。<b>点任意一行，看这一行在干什么。</b></p>
+    <div class="codecard">
+      <div class="cl" data-ln="1" data-e="定义一个函数，名叫 downloadFile（下载文件）；它接收一个输入 f，就是要下载的那个文件。">function downloadFile(f) {</div>
+      <div class="cl" data-ln="2" data-e="在页面上临时造一个链接元素，起名 a；链接就是网页里能点的那种东西，这里先造出来备用，还没显示。">  const a = document.createElement('a');</div>
+      <div class="cl" data-ln="3" data-e="给这个链接接上文件的临时网址，浏览器凭这个网址就能拿到文件的内容。">  a.href = URL.createObjectURL(f);</div>
+      <div class="cl" data-ln="4" data-e="把链接的下载文件名设成文件本来的名字，这样存到手机里不会串名。">  a.download = f.name;</div>
+      <div class="cl" data-ln="5" data-e="一行挤了三件事：把链接挂到页面上、模拟点它一下触发下载、然后立刻把链接撤掉。">  document.body.appendChild(a); a.click(); a.remove();</div>
+      <div class="cl" data-ln="6" data-e="等 60 秒之后，把刚才那个临时网址作废，免得它一直占着内存不放。">  setTimeout(() => URL.revokeObjectURL(a.href), 60000);</div>
+      <div class="cl" data-ln="7" data-e="右花括号，函数到此结束。JavaScript 靠花括号圈出函数的地盘，跟 C 语言一个路子，不像 Python 靠缩进。">}</div>
+    </div>
+    <div class="codeexp" id="codeExp">点任意一行，这里会显示这一行的中文解释。</div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-06.html">← 上一节：第 06 节</a>
+    <a href="lesson-08.html">下一节：第 08 节 报错 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '7';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+  document.querySelectorAll('.cl').forEach(function (el) {
+    el.onclick = function () {
+      document.querySelectorAll('.cl').forEach(function (x) { x.classList.remove('on'); });
+      el.classList.add('on');
+      document.getElementById('codeExp').innerHTML = '<b>第 ' + el.dataset.ln + ' 行：</b>' + el.dataset.e;
+    };
+  });
+</script>
+</body>
+</html>
