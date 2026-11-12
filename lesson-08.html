@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 08 节 · 报错与调试 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 2 看懂代码的骨架</div>
+  <div class="mod">第 08 节</div>
+  <h1>报错与调试</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">报错不可怕，先看最后一行，它通常直接给了答案。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：亮故障灯了</h2>
+    <p class="ana">你在车间处理车的方式，拿来处理程序报错一模一样：仪表盘亮了故障灯，先别慌，也别乱拆；接上诊断仪读故障码，码里写着哪个系统、什么问题；顺着码定位到部件，处理完再清码复检。程序报错就是它的故障码，顺着读、定位、处理，流程完全一样。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 178" role="img" aria-label="报错窗口与诊断三步示意图">
+        <rect x="6" y="34" width="196" height="112" rx="10" fill="#0f2233"/>
+        <rect x="6" y="34" width="196" height="24" rx="10" fill="#1f4e78"/>
+        <text x="18" y="51" font-size="12.5" fill="#fff">报错窗口 error</text>
+        <g stroke="#5b7a99" stroke-width="3"><line x1="20" y1="76" x2="150" y2="76"/><line x1="20" y1="90" x2="172" y2="90"/><line x1="20" y1="104" x2="132" y2="104"/></g>
+        <rect x="14" y="116" width="174" height="20" rx="4" fill="#cf3f38"/>
+        <text x="22" y="130" font-size="12.5" fill="#fff">最后一行：结论和提示在这</text>
+        <rect x="222" y="34" width="132" height="30" rx="8" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <text x="288" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#1f4e78">1 · 先读码</text>
+        <rect x="222" y="78" width="132" height="30" rx="8" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <text x="288" y="98" text-anchor="middle" font-size="13" font-weight="700" fill="#8a5a12">2 · 再定位</text>
+        <rect x="222" y="122" width="132" height="30" rx="8" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <text x="288" y="142" text-anchor="middle" font-size="13" font-weight="700" fill="#146c3c">3 · 处理后复检</text>
+        <text x="288" y="70" text-anchor="middle" font-size="12.5" fill="#b7c3d4">↓</text>
+        <text x="288" y="114" text-anchor="middle" font-size="12.5" fill="#b7c3d4">↓</text>
+        <text x="180" y="168" text-anchor="middle" font-size="12.5" fill="#77808f">和车间诊断是同一套流程</text>
+      </svg>
+      <div class="cap">图：报错先看最后一行，再按诊断流程走</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>报错的结构：结论在最后。</b>报错信息（error message，程序出问题时吐出的说明）往往长长一串：前面记的是它一路跑到哪、经过哪些函数，最后一两行才是结论——错在哪、为什么。看报错先翻到底，再往上找细节，跟看检查报告先看结论页是一个读法。</p>
+    <table class="mini-table">
+      <tr><th>位置</th><th>写的是什么</th></tr>
+      <tr><td>前面很多行</td><td>事发经过：调用链、现场</td></tr>
+      <tr><td>最后一两行</td><td>结论：错误类型 + 原因</td></tr>
+      <tr><td>带 hint 的行</td><td>提示：它建议你怎么做</td></tr>
+    </table>
+    <p><b>日志：程序的行车记录仪。</b>日志（log）是程序自己按时间记下的流水：每一步做了什么、什么时候做的。出了问题先捞日志，能把事发经过还原出来；没有日志硬猜，和没数据就下结论一样不靠谱。</p>
+    <p><b>错误分三类，处理完全不同。</b>语法错误（syntax error）是话没说对，程序压根起不来；运行错误是跑着跑着撞了墙，比如要读的文件不存在；逻辑错误（logic error）最阴险：不报错、能跑完，但结果是错的，只能靠验收时核对结果抓它。</p>
+    <table class="cmp">
+      <tr><th style="width:24%">类型</th><th>能不能跑</th><th>怎么发现</th></tr>
+      <tr><td>语法错误</td><td>根本起不来</td><td>报错直接指出位置</td></tr>
+      <tr><td>运行错误</td><td>跑到一半崩</td><td>报错 + 日志还原现场</td></tr>
+      <tr><td>逻辑错误</td><td>能跑完</td><td>核对结果才发现不对</td></tr>
+    </table>
+    <p><b>把报错交给 AI，要带四样东西。</b>报错原文全文（别截半截），你刚才做了什么操作，你期望发生什么，实际发生了什么。四样齐了，AI 才能定位；只发一句「它坏了」，换谁来都得先猜上半天。</p>
+    <div class="chips">
+      <div class="chip3"><b>报错全文</b><span>一字不截</span></div>
+      <div class="chip3"><b>操作 + 期望</b><span>你做了什么</span></div>
+      <div class="chip3"><b>实际结果</b><span>真正发生了什么</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：今天刚发生的一次报错</h2>
+    <p>就今天（2026-11-12），把这门课的代码往 GitHub 仓库推送时，被当场拒绝，报错拉了一长串。按本节的方法先看最后一行，提示（hint）写着：远端有你本地没有的新改动——原话是 "Updates were rejected because the remote contains work that you do not have locally"。</p>
+    <p>结论一下就清楚了：不是代码写坏了，是仓库那边已经有了更新的版本，规矩是先把远端的新改动拉下来合并，才能再往上推。后来换了一条通道把文件传了上去。报错先看最后一行和提示，这次就是现成的活教材。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这是报错全文，我刚才的操作是 XX，期望是 XX，实际是 XX。你先判断是哪类错误，再动手改。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「修好之后告诉我根源是什么、下次怎么避免，别只回一句修好了。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「报错了，你赶紧随便改改让它能跑。」——容易把真问题盖住，下次在更重要的地方爆出来。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>报错信息</b><span>Error Message</span><span class="tap">点我看解释</span></div>
+        <div class="face back">程序出问题时吐出的一段说明，结论通常在最后一两行，提示常带 hint 字样。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>日志</b><span>Log</span><span class="tap">点我看解释</span></div>
+        <div class="face back">程序按时间记下的工作流水，出事后靠它还原事发经过。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>调试</b><span>Debug</span><span class="tap">点我看解释</span></div>
+        <div class="face back">顺着报错和日志找问题根源、再把它修掉的整个过程。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>语法错误</b><span>Syntax Error</span><span class="tap">点我看解释</span></div>
+        <div class="face back">代码写法不符合语言的规矩，程序根本启动不了。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>逻辑错误</b><span>Logic Error</span><span class="tap">点我看解释</span></div>
+        <div class="face back">程序能跑完也不报错，但结果是错的，三类错误里最难发现。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 拿到一长串报错，第一眼先看哪里？</div>
+      <button class="opt">从第一行开始逐行读</button>
+      <button class="opt">最后一两行和带提示的行</button>
+      <button class="opt">随便挑中间一行看</button>
+      <div class="exp">解析：报错的结论和提示在末尾，先看结论，再回头对细节。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">2. 程序能顺利跑完、也不报错，但算出的数量明显不对。这最可能是哪类错误？</div>
+      <button class="opt">语法错误</button>
+      <button class="opt">运行错误</button>
+      <button class="opt">逻辑错误</button>
+      <div class="exp">解析：不报错却结果错，是逻辑错误，只能靠核对结果发现，验收环节就是抓它的。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">3. 语法错误的特点是什么？</div>
+      <button class="opt">写法不符合语言规矩，程序根本跑不起来</button>
+      <button class="opt">跑到一半才崩溃</button>
+      <button class="opt">能跑完，但结果不对</button>
+      <div class="exp">解析：语法是入场门槛，话没说对，程序连启动都启动不了。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">4.（情景）你只给 AI 发了一句「导出失败了」，它回了一大串猜测。下次你应该补上什么？</div>
+      <button class="opt">把报错截图的字体放大一点</button>
+      <button class="opt">先把电脑重启一次再说</button>
+      <button class="opt">报错原文全文 + 刚才的操作 + 期望结果 + 实际结果</button>
+      <div class="exp">解析：四样信息齐了，AI 才能定位问题；信息越少，它越只能连环猜。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5.（情景）推送代码被拒，最后一行提示说远端有你本地没有的新改动。这说明问题出在哪？</div>
+      <button class="opt">你的代码写错了</button>
+      <button class="opt">协作流程上：仓库已经被更新过，先同步下来再推就行</button>
+      <button class="opt">GitHub 的服务器坏了</button>
+      <div class="exp">解析：这是今天真实发生的一次报错。原因最后一行已经给了，是流程问题，不是代码问题。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-07.html">← 上一节：第 07 节</a>
+    <a href="lesson-09.html">下一节：第 09 节 三件套 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '8';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
