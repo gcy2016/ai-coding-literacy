@@ -40,12 +40,12 @@
   <div class="prog">
     <div class="t"><span>学习进度</span><span id="progTxt">已完成 0 / 23 节</span></div>
     <div class="bar"><i id="progBar"></i></div>
-    <a class="go" href="lesson-09.html">先看样板节：第 09 节 · 三件套 →</a>
+    <a class="go" href="lesson-00.html">从第 00 节导读开始 →</a>
   </div>
 
   <div id="catalog"></div>
 
-  <div class="foot">大纲：Claude · 内容制作：Muse · 验收：郭灿阳<br>进度和小测结果保存在本机浏览器里，换设备不互通。</div>
+  <div class="foot">大纲：Claude · 内容制作：Muse<br>进度和小测结果保存在本机浏览器里，换设备不互通。</div>
 </div>
 <script>
   var MODULES = [
@@ -64,6 +64,7 @@
     { t: '模块 6 · 和 AI 协作编程', d: '把前面所有概念用起来，这是整门课的落脚点。', items: [
       ['19', 'AI 编程工具是怎么工作的'], ['20', '怎么提需求'], ['21', '怎么验收，怎么保底'], ['22', '结业：一个功能从想法到上线'] ] }
   ];
+  var LIVE = { '00': 1, '01': 1, '02': 1, '03': 1, '04': 1, '05': 1, '06': 1, '07': 1, '08': 1, '09': 1 };
   var st = {}; try { st = JSON.parse(localStorage.getItem('aicourse.v1')) || {}; } catch (e) {}
   var done = st.done || {};
   var total = 0, doneN = 0, html = '';
@@ -73,8 +74,8 @@
       total++;
       var no = it[0], title = it[1], isDone = !!done[no];
       if (isDone) doneN++;
-      if (no === '09') {
-        html += '<a class="row ' + (isDone ? 'done' : 'live') + '" href="lesson-09.html"><div class="no">' + no + '</div><div class="tt">' + title + '（样板节）</div><div class="st">' + (isDone ? '已打卡 ✓' : '开始学 →') + '</div></a>';
+      if (LIVE[no]) {
+        html += '<a class="row ' + (isDone ? 'done' : 'live') + '" href="lesson-' + no + '.html"><div class="no">' + no + '</div><div class="tt">' + title + (no === '09' ? '（样板节）' : '') + '</div><div class="st">' + (isDone ? '已打卡 ✓' : '开始学 →') + '</div></a>';
       } else {
         html += '<div class="row idle"><div class="no">' + no + '</div><div class="tt">' + title + '</div><div class="st">待制作</div></div>';
       }
