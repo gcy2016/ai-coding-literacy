@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 22 节 · 结业：一个功能从想法到上线 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .gsearch { width: 100%; padding: 12px 13px; font-size: 16px; border: 1.5px solid #d7dee7; border-radius: 10px; margin: 4px 0 6px; font-family: inherit; }
+  .grow { padding: 9px 2px; border-bottom: 1px solid #eef2f7; font-size: 15px; line-height: 1.65; }
+  .grow b { color: #1f4e78; }
+  .grow span { color: #77808f; font-size: 13px; margin-left: 7px; }
+  .gempty { display: none; text-align: center; color: #8a94a6; font-size: 14px; padding: 14px 0 6px; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 6 和 AI 协作编程</div>
+  <div class="mod">第 22 节 · 结业节</div>
+  <h1>结业：一个功能从想法到上线</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">全套功夫就四步：说清、判断、验收、留后路。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>全流程地图：从想法到上线</h2>
+    <p class="ana">一个功能从冒出来到真正能用，要走完八步。这张图就是这门课的全部内容排成的一条线：前面几步在模块 1–5 学的是「看懂这条线」，模块 6 学的是「你站在这条线的哪几步上使劲」。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 148" role="img" aria-label="从想法到上线全流程图">
+        <g font-size="12.5" font-weight="700" text-anchor="middle">
+          <rect x="4" y="30" width="36" height="42" rx="8" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/><text x="22" y="56" fill="#1f4e78">想法</text>
+          <rect x="49" y="30" width="36" height="42" rx="8" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/><text x="67" y="56" fill="#1f4e78">需求</text>
+          <rect x="94" y="30" width="36" height="42" rx="8" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/><text x="112" y="56" fill="#1f4e78">PRD</text>
+          <rect x="139" y="30" width="36" height="42" rx="8" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/><text x="157" y="56" fill="#8a5a12">编码</text>
+          <rect x="184" y="30" width="36" height="42" rx="8" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/><text x="202" y="56" fill="#8a5a12">测试</text>
+          <rect x="229" y="30" width="36" height="42" rx="8" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/><text x="247" y="56" fill="#8a5a12">部署</text>
+          <rect x="274" y="30" width="36" height="42" rx="8" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/><text x="292" y="56" fill="#146c3c">验收</text>
+          <rect x="319" y="30" width="36" height="42" rx="8" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/><text x="337" y="56" fill="#146c3c">上线</text>
+        </g>
+        <g font-size="13" fill="#b7c3d4" text-anchor="middle">
+          <text x="44" y="56">›</text><text x="89" y="56">›</text><text x="134" y="56">›</text><text x="179" y="56">›</text><text x="224" y="56">›</text><text x="269" y="56">›</text><text x="314" y="56">›</text>
+        </g>
+        <path d="M337 76 L337 104 L22 104 L22 78" fill="none" stroke="#b7c3d4" stroke-width="1.6"/>
+        <path d="M22 86 L17 76 L27 76 Z" fill="#b7c3d4"/>
+        <text x="180" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">用着不对，退回前面再改一轮——这叫迭代</text>
+        <text x="180" y="18" text-anchor="middle" font-size="12.5" fill="#77808f">蓝：你主导　黄：AI 动手　绿：你把关</text>
+      </svg>
+      <div class="cap">图：八步一条线，上线后还能绕回来，这才是常态</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文：把全课链路走一遍</h2>
+    <p><b>第一步，说清。</b>任何功能都从一句话的想法开始，先把它落成需求：为什么做、做成什么样、做到哪为止、怎么算完成。重要的写成 PRD，小的也要四样说齐——这一步偷懒，后面全程都在还债。</p>
+    <div class="chips">
+      <div class="chip3"><b>说清</b><span>提需求</span></div>
+      <div class="chip3"><b>判断</b><span>拍板</span></div>
+      <div class="chip3"><b>验收</b><span>照清单点</span></div>
+      <div class="chip3"><b>留后路</b><span>能回退</span></div>
+    </div>
+    <p><b>第二步，判断。</b>AI 会给方案、也会给选项，拍板的始终是你：走哪条路线、动哪些地方、风险在哪。听不懂就让它用大白话讲到你能判断为止；判断不了，就不要放行——你点头的那一下，就是你的签字。</p>
+    <p><b>第三步，验收。</b>做完不等于做好。照事先列好的清单亲手点一遍，再对照 diff 看它到底改了什么。它自测通过只是参考，你亲手验过才算数；不合格就退回去改，别带着问题往下走。</p>
+    <p><b>第四步，留后路。</b>上线不是定局：旧版本留着、备份存着、提交历史在着，用着不对随时退得回去。敢把东西上线的前提，从来不是「保证不出错」，而是「出问题我收拾得了」。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：旅行树的完整历程</h2>
+    <p>旅行树就是走完这条线的一个真例子：先有 PRD，记在 AI_Corp 仓库的第 17 号 Issue 里；功能照着 PRD 做了出来；你试用之后做了判断——先用回时间线，于是首页入口换回时间线，树的代码原样保留、随时能打开。</p>
+    <p>注意最后这一下：上线的东西被你换下来了，但成果没有被销毁。这就是「上线不等于定局，保留回退」的样子——判断可以改，退路一直在。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <p>全课最常用的三句，记住这三句，日常协作就够用了：</p>
+    <div class="say"><span class="tag g">第一句</span>「先用大白话讲一遍你打算怎么做、会动哪些地方，我确认了再动手。」</div>
+    <div class="say"><span class="tag g">第二句</span>「改了哪些文件、每处改了什么，列给我，我对照着看。」</div>
+    <div class="say"><span class="tag g">第三句</span>「告诉我怎么验收，我照着清单亲手点一遍。」</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>全课术语表（可搜索）</h2>
+    <p>全课出现的术语都在这儿了。想不起哪个词，输入中文或英文搜一下：</p>
+    <input class="gsearch" id="gq" type="text" placeholder="搜索术语，如：分支 / branch / 部署">
+    <div id="glist">
+      <div class="grow"><b>前端</b><span>Frontend</span>——在网页应用里你看得见、点得到的那一层，运行在浏览器里。</div>
+      <div class="grow"><b>后端</b><span>Backend</span>——在服务器上运行、负责处理逻辑和数据的那一层。</div>
+      <div class="grow"><b>数据库</b><span>Database</span>——专门存数据、取数据的系统，像一本结构严谨的电子账本。</div>
+      <div class="grow"><b>服务器</b><span>Server</span>——一直开着、等着接收请求的电脑。</div>
+      <div class="grow"><b>请求 / 响应</b><span>Request / Response</span>——一方发出要求、一方返回结果，一来一回。</div>
+      <div class="grow"><b>HTML</b><span>HyperText Markup Language</span>——搭网页骨架的标记语言，决定页面上有什么。</div>
+      <div class="grow"><b>CSS</b><span>Cascading Style Sheets</span>——管网页样式的语言，决定页面长什么样。</div>
+      <div class="grow"><b>JavaScript</b><span>JS</span>——让网页能交互、动起来的编程语言。</div>
+      <div class="grow"><b>框架</b><span>Framework</span>——现成的半成品工具箱，照着它的规矩搭程序更快。</div>
+      <div class="grow"><b>API</b><span>Application Programming Interface</span>——程序之间的服务窗口，按格式递单、按格式拿结果。</div>
+      <div class="grow"><b>密钥</b><span>Secret Key</span>——证明你有资格调用的密码凭证，只放保险库，绝不进仓库。</div>
+      <div class="grow"><b>SQL</b><span>Structured Query Language</span>——操作数据库的语言，查、加、改、删数据都用它。</div>
+      <div class="grow"><b>部署</b><span>Deploy</span>——把程序送上服务器、让别人能访问到的过程。</div>
+      <div class="grow"><b>localhost</b><span>Local Machine</span>——「本机」的地址，指你正在用的这台电脑自己。</div>
+      <div class="grow"><b>Git</b><span>Version Control</span>——记录代码每一次改动、随时能退回旧版本的工具。</div>
+      <div class="grow"><b>仓库</b><span>Repository</span>——存放一个项目全部代码和改动历史的地方。</div>
+      <div class="grow"><b>提交</b><span>Commit</span>——把一批改动打包存一次档，生成一个存档点。</div>
+      <div class="grow"><b>分支</b><span>Branch</span>——从主线岔出去的平行线，在上面怎么改都不影响主线。</div>
+      <div class="grow"><b>合并请求</b><span>Pull Request</span>——申请把分支的改动并回主线，先审后合。</div>
+      <div class="grow"><b>Issue</b><span>GitHub Issue</span>——仓库里的任务帖，提问题、派活、讨论都写在上面。</div>
+      <div class="grow"><b>终端</b><span>Terminal</span>——用打字给电脑下命令的窗口。</div>
+      <div class="grow"><b>命令</b><span>Command</span>——在终端里敲的一句指令，比如复制、运行、推送。</div>
+      <div class="grow"><b>依赖</b><span>Dependency</span>——程序要借用的现成零件，也就是别人写好的库。</div>
+      <div class="grow"><b>环境</b><span>Environment</span>——程序运行的那套条件：系统、版本、装好的零件。</div>
+      <div class="grow"><b>变量</b><span>Variable</span>——给数据贴标签的盒子，名字不变，里面装的值可以换。</div>
+      <div class="grow"><b>函数</b><span>Function</span>——打包好的一段活：给它料，它出成品，还能反复用。</div>
+      <div class="grow"><b>模块</b><span>Module</span>——按职责拆开的代码文件或部件，各管一摊活。</div>
+      <div class="grow"><b>报错</b><span>Error</span>——程序跑不下去时给出的故障提示，先看最后一行。</div>
+      <div class="grow"><b>日志</b><span>Log</span>——程序运行时逐条记下的流水账，排障时靠它回放。</div>
+      <div class="grow"><b>固件</b><span>Firmware</span>——写进硬件芯片里、让设备干活的程序。</div>
+      <div class="grow"><b>上位机</b><span>Host Computer</span>——在电脑或手机上操作下位设备的那一端软件。</div>
+      <div class="grow"><b>脚本</b><span>Script</span>——写好的一串指令，交给电脑自动照着执行的短程序。</div>
+      <div class="grow"><b>上下文</b><span>Context</span>——交代给 AI 的背景信息：现状、限制、参考例子。</div>
+      <div class="grow"><b>token</b><span>Token</span>——AI 读写文字的计量单位，一次能处理多少内容按它算。</div>
+      <div class="grow"><b>PRD</b><span>Product Requirements Document</span>——产品需求文档，把需求写成一份双方都认的任务单。</div>
+      <div class="grow"><b>验收</b><span>Acceptance</span>——照事先说好的标准逐项检查，过了才算交付。</div>
+      <div class="grow"><b>测试</b><span>Test</span>——事先设计好的检查动作，固定步骤、固定预期，照着跑。</div>
+    </div>
+    <div class="gempty" id="gempty">没有匹配的术语，换个词试试。</div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>综合测验（20 题，选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 在 AI 编程里，「人」负责的三件事是？</div>
+      <button class="opt">写代码、敲命令、装软件</button>
+      <button class="opt">提需求、做判断、验收</button>
+      <button class="opt">背语法、记快捷键、装环境</button>
+      <div class="exp">解析：动手是 AI 的活，你负责出题、拍板和把关。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">2. 哪种程序是「先编译成机器码、再运行」的典型？</div>
+      <button class="opt">浏览器直接跑的 JavaScript</button>
+      <button class="opt">旅行相册的网页</button>
+      <button class="opt">写进芯片的 C 语言固件</button>
+      <div class="exp">解析：固件要先编译成机器码再刷进芯片；网页代码多是拿到直接跑。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">3.「相对路径」是相对什么说的？</div>
+      <button class="opt">当前所在的文件夹</button>
+      <button class="opt">文件的大小</button>
+      <button class="opt">服务器的位置</button>
+      <div class="exp">解析：相对路径从当前位置出发数门牌，换个位置就可能指到别处。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4.（情景）同事把项目拷到他电脑上说「打不开」，你先怀疑什么？</div>
+      <button class="opt">代码被他改坏了</button>
+      <button class="opt">环境不一样：缺依赖或版本对不上</button>
+      <button class="opt">他的电脑该换了</button>
+      <div class="exp">解析：「在我这能跑」多半是依赖、版本这类环境差异，先对环境再怀疑代码。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">5. JSON 为什么到处都在用？</div>
+      <button class="opt">它只能给网页用</button>
+      <button class="opt">它是一种数据库</button>
+      <button class="opt">它是通用的数据写法，谁都能读</button>
+      <div class="exp">解析：JSON 结构简单、跨语言通用，成了程序之间传数据的普通话。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">6. 把「函数」比作机器，最贴切的是？</div>
+      <button class="opt">投料出成品：给输入、出输出</button>
+      <button class="opt">一个存东西的仓库</button>
+      <button class="opt">一本通讯录</button>
+      <div class="exp">解析：函数把一段活打包，喂进去参数，吐出来结果，还能反复调用。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">7. 报错信息最该先看哪部分？</div>
+      <button class="opt">第一行的标题</button>
+      <button class="opt">最后一两行和提示（hint）</button>
+      <button class="opt">把中间的内容全背下来</button>
+      <div class="exp">解析：结论和下一步提示通常在最后，前面多是过程记录。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">8.（情景）程序能跑完，但算出来的结果是错的。这属于哪类错误？</div>
+      <button class="opt">语法错误</button>
+      <button class="opt">运行错误</button>
+      <button class="opt">逻辑错误</button>
+      <div class="exp">解析：不报错、能跑完、结果不对，是逻辑错误——最难缠，要靠验收清单抓。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">9. 后端的主要职责是？</div>
+      <button class="opt">管页面长什么样</button>
+      <button class="opt">存放照片文件</button>
+      <button class="opt">在服务器上处理逻辑和数据</button>
+      <div class="exp">解析：前端管脸面，后端管干活，数据层管记账。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">10. 打开网页看到 404，意思是？</div>
+      <button class="opt">要找的页面不存在</button>
+      <button class="opt">服务器自己出错了</button>
+      <button class="opt">你没有访问权限</button>
+      <div class="exp">解析：404 是「找不到」；500 是服务器出错，403 才是没权限。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">11. API 密钥（key）的作用是？</div>
+      <button class="opt">让返回的数据更好看</button>
+      <button class="opt">给照片加密</button>
+      <button class="opt">证明调用方有资格用这个接口</button>
+      <div class="exp">解析：key 是接口的门禁凭证，泄露要赶紧换，更不能写进公开代码。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">12. 照片、视频这类大文件本体，放哪更合适？</div>
+      <button class="opt">文件存储，数据库只记它们的位置</button>
+      <button class="opt">数据库的格子里</button>
+      <button class="opt">直接写进网页代码里</button>
+      <div class="exp">解析：记录进数据库按格子存，大文件进档案室按件存，两边各管擅长的。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">13. AI 说「改完需要重新部署」，意思是？</div>
+      <button class="opt">要换一台新电脑</button>
+      <button class="opt">把代码删掉重写</button>
+      <button class="opt">把新版本送上服务器并生效</button>
+      <div class="exp">解析：不部署，用户看到的还是旧版本；部署就是让改动在正式环境生效。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">14. Git 里的一次「提交」相当于？</div>
+      <button class="opt">给代码存一个档，生成一个存档点</button>
+      <button class="opt">把代码发给同事</button>
+      <button class="opt">把旧版本删干净</button>
+      <div class="exp">解析：提交就是存档点，历史攒起来，出事能逐个版本退回去。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">15.（情景）想试一个大胆改法，又怕弄坏现在能用的成果，该怎么做？</div>
+      <button class="opt">直接在主线改，坏了再说</button>
+      <button class="opt">开一条分支去试，好了再合并回来</button>
+      <button class="opt">先把项目删了再重建</button>
+      <div class="exp">解析：分支是平行线，试错不伤主线，合并之前还能先审一遍。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">16. 合并请求（PR）先审后合，审的核心是？</div>
+      <button class="opt">作者提交的次数够不够</button>
+      <button class="opt">标题写得规不规范</button>
+      <button class="opt">改动对不对、有没有顺手动别的东西</button>
+      <div class="exp">解析：PR 是并回主线前的关口，对照需求看 diff 才是正事。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">17. 固件和普通电脑程序最大的不同是？</div>
+      <button class="opt">固件不用写代码</button>
+      <button class="opt">固件只能用 Python 写</button>
+      <button class="opt">固件写进硬件芯片里运行</button>
+      <div class="exp">解析：固件住在设备里，更新它要把新版刷进芯片，这叫刷写。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">18.（情景）一万行报文日志，要统计某类报文出现几次，最像脚本干的活是？</div>
+      <button class="opt">打印出来一行行数</button>
+      <button class="opt">发给同事一人一半慢慢数</button>
+      <button class="opt">写一小段程序：读文件、筛选、统计</button>
+      <div class="exp">解析：读、筛、算、出结果，是数据处理脚本的固定套路。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">19.（情景）下面三句话说给 AI，哪句最容易换来返工？</div>
+      <button class="opt">「把这个软件优化一下」</button>
+      <button class="opt">「只改导出功能，别动界面，导出的列照这张表」</button>
+      <button class="opt">「分两批做，先交第一批我验」</button>
+      <div class="exp">解析：没背景、没范围、没验收标准的一句「优化一下」，AI 只能猜，猜错就返工。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">20.（情景）AI 说「改好了，测试全过」，你的标准动作是？</div>
+      <button class="opt">直接宣布上线</button>
+      <button class="opt">让它把代码再重写一遍求个安心</button>
+      <button class="opt">让它自述改动、看 diff 对照，再照清单亲手点一遍</button>
+      <div class="exp">解析：汇报、对照、亲手验，三步齐了才叫验收——这也是全课的收尾动作。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-21.html">← 上一节：第 21 节</a>
+    <a href="lesson-a01.html">下一节：进阶 A01 程序类型地图 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '22';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  var LG = String(parseInt(NO, 10)); if (LG !== NO) { if (st.done[LG]) st.done[NO] = true; if (st.quiz[LG]) st.quiz[NO] = st.quiz[LG]; }
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。基础篇到这里就学完了。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+  var gin = document.getElementById('gq'), grows = document.querySelectorAll('.grow'), gempty = document.getElementById('gempty');
+  if (gin) gin.addEventListener('input', function () {
+    var v = gin.value.trim().toLowerCase(), n = 0;
+    grows.forEach(function (r) { var hit = !v || r.textContent.toLowerCase().indexOf(v) >= 0; r.style.display = hit ? '' : 'none'; if (hit) n++; });
+    gempty.style.display = n ? 'none' : 'block';
+  });
+</script>
+</body>
+</html>
