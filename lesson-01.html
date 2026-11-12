@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 01 节 · 代码是怎么跑起来的 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 1 程序是什么</div>
+  <div class="mod">第 01 节</div>
+  <h1>代码是怎么跑起来的</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">代码是菜谱，厨师照着一步步做，菜才出锅。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：菜谱与厨师</h2>
+    <p class="ana">菜谱写得再详细，也不会自己变成一盘菜——得有厨师照着一步步做。代码和机器就是这关系：代码是写给机器的菜谱，机器是厨师，一步一步照着执行，你最后看到的画面和结果，就是出锅的菜。中间还有个讲究：厨师只认一种「语言」，菜谱得先翻译成他能懂的版本，翻译的方式有两种，就是这一节要讲的编译和解释。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 168" role="img" aria-label="菜谱与厨师示意图">
+        <rect x="10" y="34" width="104" height="104" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><rect x="44" y="50" width="36" height="34" rx="2"/><line x1="51" y1="60" x2="73" y2="60"/><line x1="51" y1="68" x2="73" y2="68"/><line x1="51" y1="76" x2="66" y2="76"/></g>
+        <text x="62" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">菜谱</text>
+        <text x="62" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">源代码 · 人写的</text>
+        <rect x="128" y="34" width="104" height="104" rx="10" fill="#fdf6ec" stroke="#d9a13b" stroke-width="1.5"/>
+        <g stroke="#d9a13b" stroke-width="1.8" fill="none"><path d="M165 84 a15 12 0 0 1 30 0"/><line x1="158" y1="86" x2="202" y2="86"/><circle cx="180" cy="68" r="2.6"/></g>
+        <text x="180" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#8a5a12">厨师</text>
+        <text x="180" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">机器 · 照着执行</text>
+        <rect x="246" y="34" width="104" height="104" rx="10" fill="#eefaf0" stroke="#1d9e57" stroke-width="1.5"/>
+        <g stroke="#1d9e57" stroke-width="1.8" fill="none"><rect x="276" y="52" width="44" height="30" rx="2"/><line x1="292" y1="82" x2="292" y2="90"/><line x1="282" y1="90" x2="314" y2="90"/></g>
+        <text x="298" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#146c3c">出锅</text>
+        <text x="298" y="126" text-anchor="middle" font-size="12.5" fill="#77808f">运行 · 你看到的结果</text>
+        <text x="121" y="90" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="239" y="90" text-anchor="middle" font-size="14" fill="#b7c3d4">→</text>
+        <text x="180" y="160" text-anchor="middle" font-size="12.5" fill="#77808f">厨师只认机器码：菜谱要先翻译——编译或解释</text>
+      </svg>
+      <div class="cap">图：源代码是菜谱，机器是厨师，运行就是做菜</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>源代码和机器码是两种东西。</b>源代码（source code）就是你和 AI 看到的那份代码：人能读懂的文字，一行行写明让电脑做什么。但芯片只认机器码（machine code），是一串 0 和 1。人写的这份，必须先翻译成机器码才能执行。</p>
+    <div class="chips">
+      <div class="chip3"><b>源代码</b><span>人能读懂的文字</span></div>
+      <div class="chip3"><b>机器码</b><span>芯片能直接执行</span></div>
+    </div>
+    <p><b>编译：提前整份翻译。</b>编译（compile）是把源代码一次性全译成机器码，生成一个能直接运行的文件，以后每次运行都用这份译好的。像把整本菜谱先译成中文出版，厨师照中文版做，不用次次现翻。C 语言就是这一路。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>写源代码</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>编译成机器码文件</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>随时拿来运行</div>
+    </div>
+    <p><b>解释：边翻译边执行。</b>解释（interpret）靠一个叫解释器（interpreter）的程序，读一行、译一行、做一行，不生成独立的机器码文件。像厨师看外文菜谱，旁边有人一句句翻给他听。Python 和 JavaScript 都这样。</p>
+    <table class="cmp">
+      <tr><th style="width:26%"></th><th>编译</th><th>解释</th></tr>
+      <tr><td><b>何时翻译</b></td><td>动手之前，整份译完</td><td>一边运行一边译</td></tr>
+      <tr><td><b>产物</b></td><td>生成机器码文件</td><td>不生成，靠解释器现场读</td></tr>
+      <tr><td><b>例子</b></td><td>C 语言固件</td><td>Python、网页 JavaScript</td></tr>
+    </table>
+    <p><b>语言没有高下，只有分工。</b>C 离硬件最近，常写固件；Python 好读好写，常写脚本和工具；JavaScript 管网页上的动作。HTML、CSS 严格说不算编程语言，一个管网页有什么、一个管长什么样。</p>
+    <table class="cmp">
+      <tr><th>语言</th><th>主要管什么</th><th>怎么跑</th></tr>
+      <tr><td><b>C</b></td><td>固件、贴近硬件的程序</td><td>编译</td></tr>
+      <tr><td><b>Python</b></td><td>脚本、数据处理、工具</td><td>解释</td></tr>
+      <tr><td><b>JavaScript</b></td><td>网页上的交互动作</td><td>解释</td></tr>
+      <tr><td><b>HTML / CSS</b></td><td>网页的结构与样式</td><td>浏览器直接处理</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目</h2>
+    <p><b>旅行相册：解释型。</b>相册是 HTML、CSS、JavaScript 写的，浏览器拿到代码直接读着跑，没有提前编译这一步，所以改完一刷新就能看到效果。</p>
+    <p><b>PNG2PPT：也是解释型。</b>它以 Python 为主，靠 Python 解释器一行行执行，同样不用编译。</p>
+    <p><b>CANLink：一半一半。</b>它的网页部分是 JavaScript，浏览器里解释执行；而盒子里跑的固件 vdlink 是 C 语言写的，必须先编译成机器码文件，再刷进芯片——刷进去的永远是机器码，不是源代码。</p>
+    <p><b>刷写包自助站：脚本生成。</b>它的网页不是手写的，是一个叫 build.py 的 Python 脚本把数据「生成」出来的。改内容时改的是数据和脚本，再重新生成一次。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「这东西是什么语言写的？改完是直接能跑，还是要先编译、重新生成一遍？」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「你改的是源代码吧？真正跑起来的那份，更新了没有？」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「报错出在哪一步：翻译（编译）阶段，还是运行阶段？」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「你不是改完了吗，怎么还打不开？」——没说哪个程序、卡在哪一步，AI 只能从头猜。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>源代码</b><span>Source Code</span><span class="tap">点我看解释</span></div>
+        <div class="face back">人用编程语言写成的文本，看得懂，但芯片不能直接照着执行。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>机器码</b><span>Machine Code</span><span class="tap">点我看解释</span></div>
+        <div class="face back">芯片能直接执行的指令，由 0 和 1 组成，人基本看不懂。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>编译</b><span>Compile</span><span class="tap">点我看解释</span></div>
+        <div class="face back">提前把源代码整份翻译成机器码，生成一个能直接运行的文件。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>解释器</b><span>Interpreter</span><span class="tap">点我看解释</span></div>
+        <div class="face back">运行时读一行、译一行、执行一行的程序，Python 和 JavaScript 靠它跑。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>运行</b><span>Run</span><span class="tap">点我看解释</span></div>
+        <div class="face back">让程序真正开始执行、干起活来的动作；写好了不等于在运行。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 电脑芯片能直接照着执行的是哪一种？</div>
+      <button class="opt">源代码，就是人写的那份文字</button>
+      <button class="opt">机器码，由 0 和 1 组成的指令</button>
+      <button class="opt">代码里的英文注释</button>
+      <div class="exp">解析：芯片只认机器码。源代码必须先经编译或解释翻译过去，它才动得了。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">2. C 语言写的固件改了一行，要让盒子用上新代码，必须先做什么？</div>
+      <button class="opt">把源代码直接刷进芯片</button>
+      <button class="opt">先编译成机器码文件，再刷进去</button>
+      <button class="opt">把代码打印出来贴在盒子上</button>
+      <div class="exp">解析：C 是编译型语言。刷进芯片的永远是编译好的机器码文件，源代码刷进去芯片也读不懂。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">3. 一个 Python 脚本在甲电脑上跑得好好的，拷到乙电脑上双击没反应。最可能的原因是？</div>
+      <button class="opt">乙电脑没装 Python 解释器，没人读这份脚本</button>
+      <button class="opt">文件名太长，电脑读不出来</button>
+      <button class="opt">乙电脑的屏幕不够大</button>
+      <div class="exp">解析：解释型语言靠解释器现场翻译执行。没装解释器，脚本就只是一份没人念的菜谱。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4.（情景）AI 回复你：「vdlink 固件的源码我改好了，你直接刷这个 .c 文件就行。」这句话哪里不对？</div>
+      <button class="opt">固件的源码不许改</button>
+      <button class="opt">.c 是源代码，要先编译成固件文件才能刷</button>
+      <button class="opt">刷之前得先给文件改个名</button>
+      <div class="exp">解析：.c 文件是给人看的源代码，芯片只认编译后的机器码。编译这一步跳不过去，谁说能跳谁就说错了。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">5. 网页改完一刷新就生效、不用先「生成」一遍，是因为？</div>
+      <button class="opt">网页根本不用代码</button>
+      <button class="opt">浏览器本身就是解释器，拿到 JavaScript 直接读着跑</button>
+      <button class="opt">服务器在后台自动帮你编译好了</button>
+      <div class="exp">解析：JavaScript 是解释型，浏览器边读边执行，所以改完刷新即见效。这也是网页开发调试快的原因之一。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-00.html">← 上一节：第 00 节 导读</a>
+    <a href="lesson-02.html">下一节：第 02 节 文件、路径和项目结构 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '1';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
