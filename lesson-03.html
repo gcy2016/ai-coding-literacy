@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 03 节 · 终端：AI 为什么总在敲命令 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #2e75b6; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #1f4e78, #2e75b6); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #2e75b6; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 8px 9px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #eef4fb; color: #1f4e78; }
+  .chips { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .chip3 { flex: 1; border: 1.5px solid #d7dee7; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .chip3 b { display: block; font-size: 15px; color: #1f4e78; }
+  .chip3 span { font-size: 12.5px; color: #77808f; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .mini-table td, .mini-table th { border: 1px solid #dfe6ef; padding: 6px 8px; }
+  .mini-table th { background: #f6f9fc; font-family: inherit; }
+  .flow { margin: 12px 0 4px; }
+  .fstep { display: flex; align-items: center; gap: 11px; font-size: 14.5px; color: #40506b; padding: 3px 0; }
+  .fstep i { display: flex; width: 28px; height: 28px; border-radius: 50%; background: #2e75b6; color: #fff; font-style: normal; font-weight: 700; align-items: center; justify-content: center; font-size: 13.5px; flex-shrink: 0; }
+  .farr { color: #b7c3d4; font-size: 14px; margin-left: 8px; line-height: 1; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #eef4fb; border: 1.5px solid #c9dcf2; }
+  .term .front b { font-size: 17px; color: #1f4e78; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #1f4e78; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 模块 1 程序是什么</div>
+  <div class="mod">第 03 节</div>
+  <h1>终端：AI 为什么总在敲命令</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n" style="background:#fff;color:#1f4e78">1</span> 一句话结论</div>
+    <div class="big">终端就是用打字给电脑下命令的地方。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：点菜与喊话</h2>
+    <p class="ana">平时用电脑像在餐厅点菜：菜单（图形界面）上有什么你点什么，点不了菜单之外的东西。终端像直接冲后厨喊话：没有菜单，你说什么厨师做什么，快是快，但喊错一句，端出来的可能就是另一道菜。AI 是熟客，它知道每道「暗语」怎么喊，所以总爱走喊话这条路。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 168" role="img" aria-label="点菜与终端喊话示意图">
+        <rect x="10" y="30" width="160" height="108" rx="10" fill="#eef4fb" stroke="#2e75b6" stroke-width="1.5"/>
+        <g stroke="#2e75b6" stroke-width="1.8" fill="none"><rect x="52" y="48" width="76" height="46" rx="4"/><line x1="52" y1="60" x2="128" y2="60"/></g>
+        <g fill="#2e75b6"><circle cx="60" cy="54" r="2.2"/><circle cx="69" cy="54" r="2.2"/><circle cx="78" cy="54" r="2.2"/></g>
+        <g stroke="#2e75b6" stroke-width="1.8"><line x1="62" y1="72" x2="104" y2="72"/><line x1="62" y1="82" x2="92" y2="82"/></g>
+        <text x="90" y="116" text-anchor="middle" font-size="14" font-weight="700" fill="#1f4e78">图形界面：点菜</text>
+        <text x="90" y="132" text-anchor="middle" font-size="12.5" fill="#77808f">有按钮才点得了</text>
+        <rect x="190" y="30" width="160" height="108" rx="10" fill="#22303f" stroke="#22303f" stroke-width="1.5"/>
+        <text x="206" y="66" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#7ee2a0">&gt;_ ls</text>
+        <text x="206" y="90" font-family="ui-monospace, Menlo, monospace" font-size="13" fill="#a9bccd">index.html  data.json</text>
+        <text x="270" y="116" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">终端：喊话</text>
+        <text x="270" y="132" text-anchor="middle" font-size="12.5" fill="#a9bccd">打字下令，没菜单</text>
+        <text x="180" y="160" text-anchor="middle" font-size="12.5" fill="#77808f">效果一样：终端更快更准，也更容易喊错</text>
+      </svg>
+      <div class="cap">图：图形界面（GUI）与终端（terminal），两种操作电脑的方式</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>命令行是什么。</b>命令行（command line）就是一个打字下命令的窗口：你敲一行字，电脑照着做，再把结果以文字回给你。AI 总在敲命令，是因为不少活压根没有按钮可点；就算有，敲命令也比点十几下鼠标快、还准。</p>
+    <div class="chips">
+      <div class="chip3"><b>你敲</b><span>一行命令</span></div>
+      <div class="chip3"><b>电脑做</b><span>照着执行</span></div>
+      <div class="chip3"><b>回给你</b><span>文字结果</span></div>
+    </div>
+    <p><b>命令的结构：命令名＋参数。</b>一条命令的长相很规整：先是命令名，说要做什么；后面跟参数（argument），交代对谁做、怎么做。像喊「把报表拷到备份文件夹」：拷是命令，后面跟的是对象和去向。结构看懂，AI 的命令就能读个大概。</p>
+    <table class="mini-table">
+      <tr><th>scp outline.pdf server:/tmp/</th><th>意思</th></tr>
+      <tr><td>scp</td><td>命令名：往服务器传文件</td></tr>
+      <tr><td>outline.pdf</td><td>参数：传哪个文件</td></tr>
+      <tr><td>server:/tmp/</td><td>参数：传到哪台机器的哪个目录</td></tr>
+    </table>
+    <p><b>常见命令，认脸熟就行。</b>不用背，更不用自己敲，但要认得出：cd 是进目录，ls 是列出有什么，cp 是复制，mv 是移动或改名，rm 是删除——它最危险，终端里删了不进回收站。下面这张表，混个脸熟就够。</p>
+    <table class="cmp">
+      <tr><th style="width:26%">命令</th><th>干什么</th></tr>
+      <tr><td><b>cd</b></td><td>进入某个目录</td></tr>
+      <tr><td><b>ls</b></td><td>列出当前目录里有什么</td></tr>
+      <tr><td><b>pwd</b></td><td>显示自己现在在哪个目录</td></tr>
+      <tr><td><b>mkdir</b></td><td>新建一个目录</td></tr>
+      <tr><td><b>cp</b></td><td>复制文件</td></tr>
+      <tr><td><b>mv</b></td><td>移动文件，或者给它改名</td></tr>
+      <tr><td><b>rm</b></td><td>删除——不进回收站，慎用</td></tr>
+      <tr><td><b>cat</b></td><td>把文件内容显示出来看</td></tr>
+      <tr><td><b>git</b></td><td>管代码的版本和仓库</td></tr>
+      <tr><td><b>python3</b></td><td>运行一个 Python 程序</td></tr>
+    </table>
+    <p><b>命令的脾气：精确，但没确认。</b>好处是可重复：同一条命令跑一百遍，结果一样。但它没有二次确认弹窗，敲错一个字母，可能就是另一件事。AI 报命令时，你重点看两样：动的是哪个文件，有没有删除、覆盖这类回不来的动作。</p>
+    <div class="flow">
+      <div class="fstep"><i>1</i>先看命令名：它要做什么</div><div class="farr">↓</div>
+      <div class="fstep"><i>2</i>再看参数：动的是哪个文件</div><div class="farr">↓</div>
+      <div class="fstep"><i>3</i>有删除、覆盖，先喊停再确认</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：真跑过的命令</h2>
+    <p>下面这些不是例子，是在你的项目里真被执行过的命令。以后 AI 再报出类似的，你就知道它在干什么：</p>
+    <table class="mini-table">
+      <tr><td>git push</td><td>把改动推上 GitHub 仓库，这门课就是这么交付的</td></tr>
+      <tr><td>node test_web.js</td><td>跑 CANLink 的网页自测，改完先过一遍</td></tr>
+      <tr><td>python3 build.py</td><td>生成刷写包自助站的网页</td></tr>
+      <tr><td>scp …</td><td>往新加坡那台服务器传文件</td></tr>
+      <tr><td>ssh …</td><td>登录那台服务器</td></tr>
+      <tr><td>curl …</td><td>看一个网址通不通、返回什么</td></tr>
+    </table>
+    <p>看出规律没有：命令名都是动词，参数都是名词——做什么、对什么做。抓住这两样，一条命令的意思就猜出八九成。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「你打算跑哪条命令？先原样写出来给我看一眼，再执行。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「这条命令会动哪些文件？里面有没有删除或者覆盖？」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「跑完了把结果的关键几行贴给我，别只说『成功了』。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「你直接弄吧，弄完告诉我一声。」——命令没有确认弹窗，等它跑完，删错的可就回不来了。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>终端</b><span>Terminal</span><span class="tap">点我看解释</span></div>
+        <div class="face back">打字下命令的那个窗口，命令在这里敲、结果在这里看。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>命令</b><span>Command</span><span class="tap">点我看解释</span></div>
+        <div class="face back">一行让电脑做一件事的指令，由命令名和参数组成。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>参数</b><span>Argument</span><span class="tap">点我看解释</span></div>
+        <div class="face back">跟在命令名后面的补充信息，交代对谁做、怎么做、做到哪。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>提示符</b><span>Prompt</span><span class="tap">点我看解释</span></div>
+        <div class="face back">终端里等着你输入的那个记号（常见是 $ 或 &gt;），它出现说明上一条命令跑完了。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>输出</b><span>Output</span><span class="tap">点我看解释</span></div>
+        <div class="face back">命令执行后电脑回给你的文字结果，报错信息也出现在这里。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">7</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 命令 python3 build.py 里，哪一部分是参数？</div>
+      <button class="opt">python3</button>
+      <button class="opt">build.py</button>
+      <button class="opt">整行都是命令名，没有参数</button>
+      <div class="exp">解析：python3 是命令名，意思是「用 Python 来跑」；build.py 是参数，告诉它具体跑哪个文件。</div>
+    </div>
+    <div class="q" data-a="2">
+      <div class="qt">2. 哪个命令最该小心，因为删掉的东西不进回收站？</div>
+      <button class="opt">ls</button>
+      <button class="opt">cd</button>
+      <button class="opt">rm</button>
+      <div class="exp">解析：rm 在终端里是直接删除，没有回收站兜底。看见它，先确认删的到底是什么。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">3. ls 是干什么的？</div>
+      <button class="opt">列出当前目录里有什么</button>
+      <button class="opt">删除不用的文件</button>
+      <button class="opt">登录远程服务器</button>
+      <div class="exp">解析：ls 是 list（清单）的缩写。进了一个目录先 ls 看看有什么，是 AI 干活的常规起手式。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4.（情景）AI 说：「我执行了 rm 把旧目录清掉了。」你的第一反应应该是？</div>
+      <button class="opt">放心，反正回收站里还能找回来</button>
+      <button class="opt">先问清它删的到底是哪个目录、有没有备份</button>
+      <button class="opt">让它把旁边的目录也一起清了</button>
+      <div class="exp">解析：终端删除不可恢复。出事之前先确认对象和备份，比事后追问有用得多。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">5. AI 汇报「刚执行了 git push」，它刚做完的是什么？</div>
+      <button class="opt">把本地的改动上传到 GitHub 仓库</button>
+      <button class="opt">把仓库删掉重新建了一个</button>
+      <button class="opt">给电脑装了个新软件</button>
+      <div class="exp">解析：push 是「推」：把本机的改动送到远程仓库。代码的同步和备份，都靠这一步。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-02.html">← 上一节：第 02 节 文件、路径和项目结构</a>
+    <a href="lesson-04.html">下一节：第 04 节 依赖与环境 →</a>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = '3';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
