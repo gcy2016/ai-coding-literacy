@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>进阶 A01 · 程序类型地图 | AI 编程通识课</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f4f7; color: #222; font-size: 16px; line-height: 1.75; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 14px 14px 48px; }
+  .crumb { font-size: 13px; color: #8a94a6; margin: 2px 0 10px; }
+  .crumb a { color: #2e75b6; text-decoration: none; }
+  h1 { font-size: 23px; line-height: 1.4; margin: 0 0 4px; }
+  .mod { font-size: 13px; color: #7a4fa3; font-weight: 700; letter-spacing: 1px; }
+  .card { background: #fff; border-radius: 14px; padding: 18px 16px; margin: 14px 0; box-shadow: 0 1px 4px rgba(20,40,80,.06); }
+  .keyline { background: linear-gradient(135deg, #4a2d6b, #7a4fa3); color: #fff; border-radius: 14px; padding: 20px 18px; margin: 14px 0; }
+  .keyline .lab { font-size: 13px; opacity: .95; letter-spacing: 2px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .keyline .lab .n { width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #4a2d6b; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: 0; }
+  .keyline .big { font-size: 21px; font-weight: 700; line-height: 1.5; }
+  h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  h2 .n { width: 26px; height: 26px; border-radius: 50%; background: #7a4fa3; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  p { margin: 8px 0; }
+  .ana { color: #40506b; }
+  .fig { margin: 12px 0 4px; }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .cap { font-size: 13px; color: #8a94a6; text-align: center; margin-top: 6px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 4px; }
+  table.cmp th, table.cmp td { border: 1px solid #dfe6ef; padding: 7px 8px; text-align: left; vertical-align: top; }
+  table.cmp th { background: #f3eef9; color: #4a2d6b; }
+  .case { background: #fffaf0; border: 1px solid #f0dcb2; border-radius: 12px; padding: 14px; margin-top: 4px; }
+  .case .ct { font-weight: 700; color: #8a5a12; margin-bottom: 4px; }
+  .say { background: #f0f9f2; border: 1px solid #bfe6c9; border-radius: 10px; padding: 11px 13px; margin: 9px 0; font-size: 15.5px; }
+  .say.bad { background: #fdf1f0; border-color: #f2c7c4; }
+  .say .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+  .say .tag.g { color: #1d9e57; } .say .tag.r { color: #cf3f38; }
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .term { perspective: 600px; height: 118px; cursor: pointer; }
+  .term .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .term.flip .in { transform: rotateY(180deg); }
+  .term .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+  .term .front { background: #f3eef9; border: 1.5px solid #d9c8ef; }
+  .term .front b { font-size: 17px; color: #4a2d6b; }
+  .term .front span { font-size: 12.5px; color: #77808f; }
+  .term .front .tap { font-size: 11.5px; color: #a5b3c6; margin-top: 5px; }
+  .term .back { background: #4a2d6b; color: #fff; transform: rotateY(180deg); font-size: 13.5px; line-height: 1.6; }
+  .quiz .q { margin: 0 0 18px; }
+  .quiz .qt { font-weight: 700; margin-bottom: 8px; }
+  .opt { display: block; width: 100%; text-align: left; border: 1.5px solid #d7dee7; background: #fff; border-radius: 10px; padding: 11px 13px; font-size: 15.5px; margin: 7px 0; cursor: pointer; color: #222; }
+  .opt.ok { border-color: #1d9e57; background: #eafaf0; }
+  .opt.no { border-color: #cf3f38; background: #fdeeed; }
+  .exp { display: none; font-size: 14px; color: #40506b; background: #f6f9fc; border-radius: 8px; padding: 9px 11px; margin-top: 7px; line-height: 1.65; }
+  .exp.show { display: block; }
+  .done-btn { display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: #07c160; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .done-btn.off { background: #b9c4d0; }
+  .done-tip { text-align: center; font-size: 13.5px; color: #8a94a6; margin-top: 8px; min-height: 20px; }
+  .nav2 { display: flex; justify-content: space-between; margin-top: 18px; font-size: 14.5px; }
+  .nav2 a { color: #2e75b6; text-decoration: none; }
+  .nav2 .dis { color: #b7c3d4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="index.html">AI 编程通识课</a> · 进阶篇 A 程序不只有网页</div>
+  <div class="mod">进阶 A01 节 · 进阶样板节</div>
+  <h1>程序类型地图</h1>
+
+  <div class="keyline">
+    <div class="lab"><span class="n">1</span> 一句话结论</div>
+    <div class="big">先认程序的类型，再谈功能怎么做。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>先打个比方：交通工具图鉴</h2>
+    <p class="ana">轿车、卡车、摩托车、高铁、轮船、飞机，都能把人送到目的地，但跑的路不同、要的驾照不同、保养方式也不同。选错类型，技术再好也白搭——让轮船上高速，司机再牛也没用。程序也一样，先分清类型，再谈功能。</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 208" role="img" aria-label="六类程序图鉴">
+        <g font-size="13.5" font-weight="700" text-anchor="middle">
+          <rect x="6" y="8" width="112" height="88" rx="9" fill="#eef4fb" stroke="#2e75b6"/>
+          <text x="62" y="46" fill="#1f4e78">网页应用</text>
+          <text x="62" y="68" font-size="12" font-weight="400" fill="#77808f">浏览器里跑</text>
+          <rect x="124" y="8" width="112" height="88" rx="9" fill="#fdf6ec" stroke="#d9a13b"/>
+          <text x="180" y="46" fill="#8a5a12">桌面软件</text>
+          <text x="180" y="68" font-size="12" font-weight="400" fill="#77808f">装在电脑上</text>
+          <rect x="242" y="8" width="112" height="88" rx="9" fill="#eefaf0" stroke="#1d9e57"/>
+          <text x="298" y="46" fill="#146c3c">手机应用</text>
+          <text x="298" y="68" font-size="12" font-weight="400" fill="#77808f">装在手机上</text>
+          <rect x="6" y="108" width="112" height="88" rx="9" fill="#f6f9fc" stroke="#8a94a6"/>
+          <text x="62" y="146" fill="#40506b">脚本工具</text>
+          <text x="62" y="168" font-size="12" font-weight="400" fill="#77808f">跑完就走</text>
+          <rect x="124" y="108" width="112" height="88" rx="9" fill="#f3eef9" stroke="#7a4fa3"/>
+          <text x="180" y="146" fill="#4a2d6b">后台服务</text>
+          <text x="180" y="168" font-size="12" font-weight="400" fill="#77808f">常驻值班</text>
+          <rect x="242" y="108" width="112" height="88" rx="9" fill="#fdf1f0" stroke="#cf3f38"/>
+          <text x="298" y="146" fill="#8c2f28">嵌入式固件</text>
+          <text x="298" y="168" font-size="12" font-weight="400" fill="#77808f">住在芯片里</text>
+        </g>
+      </svg>
+      <div class="cap">图：六类程序，先认类型，再谈功能</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>正文</h2>
+    <p><b>判断类型，先问三个问题。</b>它在哪跑（浏览器、电脑、手机、服务器、还是芯片里）？它的界面是什么样（网页、窗口、App 界面、还是干脆没有界面）？它的数据放哪、怎么交到用户手里、以后怎么更新？这三问答完，类型基本就定了。</p>
+    <table class="cmp">
+      <tr><th>类型</th><th>在哪跑</th><th>怎么交付</th><th>怎么更新</th></tr>
+      <tr><td>网页应用</td><td>浏览器</td><td>发个网址</td><td>改服务器一侧，大家自动用上新版</td></tr>
+      <tr><td>桌面软件</td><td>电脑系统</td><td>安装包</td><td>发新版，用户重新装</td></tr>
+      <tr><td>手机应用</td><td>手机系统</td><td>应用商店或安装文件</td><td>商店更新或覆盖安装</td></tr>
+      <tr><td>脚本工具</td><td>哪台电脑都能跑</td><td>发个文件</td><td>换个文件就行</td></tr>
+      <tr><td>后台服务</td><td>服务器</td><td>没有「交付」，它一直在那值班</td><td>在服务器上换版本</td></tr>
+      <tr><td>嵌入式固件</td><td>设备芯片</td><td>跟着硬件走</td><td>刷写（把新程序写进芯片）</td></tr>
+    </table>
+    <p><b>网页和桌面，是最容易选错的一对。</b>网页的好处是不用装、哪台设备打开网址都能用、更新一次全员生效；代价是它被浏览器关在一个沙盒里，直接碰硬件、读本地文件都受限。桌面软件反过来：装起来麻烦、更新要挨个换，但能贴身控制硬件、离线也能干活。要不要碰硬件，往往就是这对选择的分水岭。</p>
+    <p><b>手机应用，很多时候是网页加个壳。</b>真正的原生应用（native，为手机系统专门写的）能用摄像头、定位、推送，体验最好，但开发和上架最重；不少应用内里装的就是网页，套个壳而已（进阶 A03 细讲三条路线）。小程序（在微信这类大 App 里运行的小应用）是第四种活法：不用装，但得守平台的规矩。</p>
+    <p><b>脚本和后台服务，区别在「下班」还是「值班」。</b>脚本（script）是干完就走的一次性小程序，适合处理一批数据、生成一份报告；后台服务（service，常驻运行的程序）是 24 小时值班的，盯消息、等请求、定时干活。让脚本去值班，它跑完就退出了；让服务去干一次性的活，又白白占着机器。</p>
+    <p><b>固件，住在硬件身体里。</b>它和硬件绑死：资源小到按 KB 算、没有屏幕键盘、更新要靠刷写，刷坏了设备可能直接变砖。所以固件的世界里，谨慎比新潮重要——这也是为什么基础篇第 17 节说，这里还在用 C 语言。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>对应到你的项目：一套系统常常不止一种</h2>
+    <p>把你手上的东西往地图上一放：旅行相册和这门课，都是网页应用；刷写上位机（博世、伯特利那种 Windows 工具）是桌面软件；服务器上盯消息、做转发的哨兵和中继，是后台服务；平时让 AI 临时跑的报文分析，是脚本。</p>
+    <p>最典型的是一套系统横跨两种：CAN 记录仪的手机端 canlink 是网页应用，盒子里的 vdlink 是嵌入式固件——两半的类型不同，规矩就不同：网页那半改完推上去就生效，固件那半每改一次都要刷进盒子、还要防刷坏。跟 AI 派活时把两半分开说，返工会少很多。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span>和 AI 协作时怎么用</h2>
+    <div class="say"><span class="tag g">可以这样说</span>「先别写。先告诉我这个功能你打算做成哪种类型的程序，为什么选它。」</div>
+    <div class="say"><span class="tag g">可以这样说</span>「它要跑在哪台设备上、谁来用、以后怎么更新？这三样先定下来再动手。」</div>
+    <div class="say bad"><span class="tag r">别这样说</span>「帮我做个软件。」——类型都没定，AI 默认就会做成网页，等你发现它碰不到硬件时已经白干一半了。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span>术语卡（点一张翻面）</h2>
+    <div class="terms">
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>桌面软件</b><span>Desktop App</span><span class="tap">点我看解释</span></div>
+        <div class="face back">装在电脑系统上运行的程序，能贴身用硬件，更新要重新安装。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>命令行</b><span>CLI</span><span class="tap">点我看解释</span></div>
+        <div class="face back">Command Line Interface 的缩写：靠打字下命令的操作方式，脚本工具常用。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>后台服务</b><span>Service</span><span class="tap">点我看解释</span></div>
+        <div class="face back">在服务器上常驻运行的程序，没人看着也一直值班，等请求或定时干活。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>原生应用</b><span>Native App</span><span class="tap">点我看解释</span></div>
+        <div class="face back">为某个系统（安卓、iOS）专门写的应用，能用满设备能力，但开发最重。</div>
+      </div></div>
+      <div class="term" onclick="this.classList.toggle('flip')"><div class="in">
+        <div class="face front"><b>刷写</b><span>Flashing</span><span class="tap">点我看解释</span></div>
+        <div class="face back">把新程序写进芯片或控制器的动作；刷坏了设备可能无法启动，所以要格外小心。</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">7</span>真实案例：功能没错，是类型没对上</h2>
+    <div class="case">
+      <div class="ct">CAN 盒子到了 iPhone 上，连不上</div>
+      <p>canlink 网页在电脑和安卓手机上都能直接连上 CAN 盒子，因为它们的浏览器支持 WebUSB（网页直接操作 USB 设备的接口）。但到了 iPhone 上死活连不上——不是功能没做好，而是 iOS 上的所有浏览器都被苹果限定用同一套内核，根本没有这个接口，网页应用这个类型在 iPhone 上碰硬件的路先天是断的。</p>
+      <p>后来的解法是换连接方式：加一个 ESP32 中转盒，盒子和 CAN 盒子用 USB 连、和手机用 WiFi 连，网页改走网络和盒子说话。如果立项时先把「目标设备上，这类程序能不能跑通关键动作」确认掉，这段弯路可以提前绕开。这也是这一课排在进阶篇第一的原因：类型判断要在功能清单之前。</p>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2><span class="n">8</span>小测（选完立刻看对错）</h2>
+    <div class="q" data-a="1">
+      <div class="qt">1. 判断一个程序属于哪种类型，主要看什么？</div>
+      <button class="opt">界面做得好不好看</button>
+      <button class="opt">在哪跑、界面是什么、数据放哪、怎么更新</button>
+      <button class="opt">是用什么语言写的</button>
+      <div class="exp">解析：类型是「运行和交付的方式」，语言反而不是关键——同一种语言能写出好几类程序。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">2.（情景）你要 AI 做一个工具：插上硬件盒子读数据、没网也要能用、直接控制串口。你最该先跟它确认什么？</div>
+      <button class="opt">做成桌面软件是否更对路，别默认做成网页</button>
+      <button class="opt">界面用什么颜色</button>
+      <button class="opt">先把功能列表写满二十条</button>
+      <div class="exp">解析：贴身控制硬件＋离线可用，正是桌面软件的主场；默认做成网页，很可能最后一步碰不到硬件。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">3.（情景）「有个程序要在服务器上 24 小时盯着新消息，一有就转发。」它属于哪类？</div>
+      <button class="opt">脚本，跑完就走的那种</button>
+      <button class="opt">后台服务，常驻值班的那种</button>
+      <button class="opt">嵌入式固件</button>
+      <div class="exp">解析：关键词是「24 小时盯着」——要常驻，就是后台服务；脚本干完就退出，盯不住。</div>
+    </div>
+    <div class="q" data-a="1">
+      <div class="qt">4. 脚本和后台服务最核心的区别是？</div>
+      <button class="opt">用的编程语言不同</button>
+      <button class="opt">脚本干完一次就结束，服务常驻等活</button>
+      <button class="opt">脚本只能处理文字文件</button>
+      <div class="exp">解析：区别在「下班还是值班」，不在语言和处理对象。</div>
+    </div>
+    <div class="q" data-a="0">
+      <div class="qt">5. 把功能优先做成网页应用，最大的好处是？</div>
+      <button class="opt">不用安装、打开网址就能用，更新只改一处全员生效</button>
+      <button class="opt">运行速度一定比其他类型快</button>
+      <button class="opt">能直接控制任何硬件设备</button>
+      <div class="exp">解析：网页赢在交付和更新；碰硬件恰恰是它的短板，速度也不占优。</div>
+    </div>
+    <button class="done-btn" id="doneBtn">学完这一节，打卡</button>
+    <div class="done-tip" id="doneTip"></div>
+  </div>
+
+  <div class="nav2">
+    <a href="lesson-22.html">← 上一节：第 22 节 结业</a>
+    <span class="dis">下一节（A02）待制作 →</span>
+  </div>
+</div>
+<script>
+  var KEY = 'aicourse.v1', NO = 'A01';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  document.querySelectorAll('.q').forEach(function (q, qi) {
+    var ans = +q.dataset.a, exp = q.querySelector('.exp');
+    q.querySelectorAll('.opt').forEach(function (b, bi) {
+      b.onclick = function () {
+        q.querySelectorAll('.opt').forEach(function (x, xi) {
+          x.classList.toggle('ok', xi === ans);
+          x.classList.toggle('no', xi === bi && bi !== ans);
+        });
+        exp.classList.add('show');
+        st.quiz[NO] = st.quiz[NO] || [];
+        st.quiz[NO][qi] = (bi === ans); save(st);
+      };
+      var prev = (st.quiz[NO] || [])[qi];
+      if (prev !== undefined) { if (bi === ans) b.classList.add('ok'); exp.classList.add('show'); }
+    });
+  });
+  var btn = document.getElementById('doneBtn'), tip = document.getElementById('doneTip');
+  function paintDone() {
+    if (st.done[NO]) { btn.textContent = '已打卡 ✓'; btn.classList.add('off'); tip.textContent = '进度已存在这台设备的浏览器里，回目录能看到总进度。'; }
+  }
+  btn.onclick = function () { st.done[NO] = true; save(st); paintDone(); };
+  paintDone();
+</script>
+</body>
+</html>
