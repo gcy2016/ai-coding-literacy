@@ -241,10 +241,11 @@
   </div>
 </div>
 <script>
-  var KEY = 'aicourse.v1', NO = '5';
+  var KEY = 'aicourse.v1', NO = '05';
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
   var st = load(); st.quiz = st.quiz || {}; st.done = st.done || {};
+  var LG = String(parseInt(NO, 10)); if (LG !== NO) { if (st.done[LG]) st.done[NO] = true; if (st.quiz[LG]) st.quiz[NO] = st.quiz[LG]; }
   document.querySelectorAll('.q').forEach(function (q, qi) {
     var ans = +q.dataset.a, exp = q.querySelector('.exp');
     q.querySelectorAll('.opt').forEach(function (b, bi) {
